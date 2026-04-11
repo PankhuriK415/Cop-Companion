@@ -18,9 +18,11 @@ export default function Profile() {
           <div className="space-y-4">
             <div className="border-t border-slate-700 pt-4">
               <label className="text-slate-400 text-sm">Email</label>
-              <p className="text-white font-semibold">john.doe@casesystem.com</p>
+              <p className="text-white font-semibold">
+                john.doe@casesystem.com
+              </p>
             </div>
-            
+
             <div className="border-t border-slate-700 pt-4">
               <label className="text-slate-400 text-sm">Department</label>
               <p className="text-white font-semibold">Legal Affairs</p>

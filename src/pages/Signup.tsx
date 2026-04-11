@@ -40,7 +40,9 @@ export default function Signup() {
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex-col justify-between p-12">
         <div>
           <h1 className="text-5xl font-bold text-white mb-4">Case Companion</h1>
-          <p className="text-xl text-slate-300">Join thousands of legal professionals</p>
+          <p className="text-xl text-slate-300">
+            Join thousands of legal professionals
+          </p>
         </div>
 
         <div className="space-y-8">
@@ -49,8 +51,12 @@ export default function Signup() {
               <Lock className="text-white" size={24} />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-white mb-2">Secure Registration</h3>
-              <p className="text-slate-400">Your data is protected with encryption</p>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                Secure Registration
+              </h3>
+              <p className="text-slate-400">
+                Your data is protected with encryption
+              </p>
             </div>
           </div>
 
@@ -59,8 +65,12 @@ export default function Signup() {
               <Mail className="text-white" size={24} />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-white mb-2">Easy Setup</h3>
-              <p className="text-slate-400">Get started in minutes with simple steps</p>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                Easy Setup
+              </h3>
+              <p className="text-slate-400">
+                Get started in minutes with simple steps
+              </p>
             </div>
           </div>
 
@@ -69,27 +79,37 @@ export default function Signup() {
               <Phone className="text-white" size={24} />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-white mb-2">24/7 Support</h3>
-              <p className="text-slate-400">Our team is here to help you succeed</p>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                24/7 Support
+              </h3>
+              <p className="text-slate-400">
+                Our team is here to help you succeed
+              </p>
             </div>
           </div>
         </div>
 
-        <p className="text-slate-500 text-sm">© 2024 Case Companion. All rights reserved.</p>
+        <p className="text-slate-500 text-sm">
+          © 2024 Case Companion. All rights reserved.
+        </p>
       </div>
 
       {/* Right Side - Signup Form */}
       <div className="w-full lg:w-1/2 bg-slate-800 flex flex-col items-center justify-center p-6 overflow-auto">
         <div className="w-full max-w-md py-8">
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
+            <h2 className="text-3xl font-bold text-white mb-2">
+              Create Account
+            </h2>
             <p className="text-slate-400">Join Case Companion today</p>
           </div>
 
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-white mb-2">First Name</label>
+                <label className="block text-sm font-medium text-white mb-2">
+                  First Name
+                </label>
                 <input
                   type="text"
                   name="firstName"
@@ -101,7 +121,9 @@ export default function Signup() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-white mb-2">Last Name</label>
+                <label className="block text-sm font-medium text-white mb-2">
+                  Last Name
+                </label>
                 <input
                   type="text"
                   name="lastName"
@@ -115,7 +137,9 @@ export default function Signup() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-white mb-2">Email Address</label>
+              <label className="block text-sm font-medium text-white mb-2">
+                Email Address
+              </label>
               <input
                 type="email"
                 name="email"
@@ -128,7 +152,9 @@ export default function Signup() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-white mb-2">Phone Number</label>
+              <label className="block text-sm font-medium text-white mb-2">
+                Phone Number
+              </label>
               <input
                 type="tel"
                 name="phone"
@@ -140,7 +166,9 @@ export default function Signup() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-white mb-2">Employee ID (Optional)</label>
+              <label className="block text-sm font-medium text-white mb-2">
+                Employee ID (Optional)
+              </label>
               <input
                 type="text"
                 name="employeeId"
@@ -152,7 +180,9 @@ export default function Signup() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-white mb-2">Password</label>
+              <label className="block text-sm font-medium text-white mb-2">
+                Password
+              </label>
               <input
                 type="password"
                 name="password"
@@ -165,7 +195,9 @@ export default function Signup() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-white mb-2">Confirm Password</label>
+              <label className="block text-sm font-medium text-white mb-2">
+                Confirm Password
+              </label>
               <input
                 type="password"
                 name="confirmPassword"
@@ -186,7 +218,9 @@ export default function Signup() {
               />
               <label htmlFor="terms" className="text-sm text-slate-400">
                 I agree to the{" "}
-                <span className="text-blue-400 hover:text-blue-300 cursor-pointer">Terms of Service</span>
+                <span className="text-blue-400 hover:text-blue-300 cursor-pointer">
+                  Terms of Service
+                </span>
               </label>
             </div>
 
@@ -202,7 +236,10 @@ export default function Signup() {
 
           <p className="text-center text-slate-400 text-sm mt-6">
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-400 hover:text-blue-300 font-semibold">
+            <Link
+              to="/login"
+              className="text-blue-400 hover:text-blue-300 font-semibold"
+            >
               Sign in
             </Link>
           </p>
