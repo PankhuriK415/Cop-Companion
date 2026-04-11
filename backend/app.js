@@ -1,13 +1,20 @@
 const express = require('express');
+const cors = require('cors');
 require('dotenv').config();
 
-const authRoutes = require('./routes/authRoutes');
+const authRoutes    = require('./routes/authRoutes');
 const officerRoutes = require('./routes/officerRoutes');
-const victimRoutes = require('./routes/victimRoutes');
+const victimRoutes  = require('./routes/victimRoutes');
 const criminalRoutes = require('./routes/criminalRoutes');
 const { errorHandler, notFound } = require('./middleware/errorMiddleware');
 
 const app = express();
+
+// ─── CORS ─────────────────────────────────────────────────────────────────────
+app.use(cors({
+  origin: ['http://localhost:8080', 'http://localhost:5173', 'http://localhost:3000'],
+  credentials: true,
+}));
 
 // ─── GLOBAL MIDDLEWARE ────────────────────────────────────────────────────────
 app.use(express.json());

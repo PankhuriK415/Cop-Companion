@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
-const db = require('../config/db');
+const User = require('../models/User');
+const LoginLog = require('../models/LoginLog');
 const generateToken = require('../utils/generateToken');
 
 const login = async (req, res, next) => {
@@ -10,36 +11,24 @@ const login = async (req, res, next) => {
   }
 
   try {
-    const [rows] = await db.query(
-      'SELECT * FROM login WHERE Username = ?',
-      [username]
-    );
+    const user = await User.findOne({ Username: username });
 
-    if (rows.length === 0) {
+    if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid credentials.' });
     }
 
-    const user = rows[0];
     const isMatch = await bcrypt.compare(password, user.Password);
-
     if (!isMatch) {
       return res.status(401).json({ success: false, message: 'Invalid credentials.' });
     }
 
-    // Update Last_Login
-    await db.query(
-      'UPDATE login SET Last_Login = NOW() WHERE Login_ID = ?',
-      [user.Login_ID]
-    );
+    user.Last_Login = new Date();
+    await user.save();
 
-    // Insert into login_log
-    await db.query(
-      'INSERT INTO login_log (Username, Login_Time) VALUES (?, NOW())',
-      [user.Username]
-    );
+    await LoginLog.create({ Username: user.Username, Login_Time: new Date() });
 
     const token = generateToken({
-      login_id: user.Login_ID,
+      login_id: user._id,
       role: user.Role,
       user_id: user.User_ID,
     });
@@ -49,7 +38,7 @@ const login = async (req, res, next) => {
       message: 'Login successful.',
       token,
       user: {
-        login_id: user.Login_ID,
+        login_id: user._id,
         username: user.Username,
         role: user.Role,
         user_id: user.User_ID,

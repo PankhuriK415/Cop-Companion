@@ -1,24 +1,29 @@
 const app = require('./app');
-require('./config/db'); // Initialize DB connection pool
+const connectDB = require('./config/db');
 require('dotenv').config();
 
 const PORT = process.env.PORT || 5000;
 
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📋 Environment: ${process.env.NODE_ENV || 'development'}`);
-});
+const startServer = async () => {
+  await connectDB();
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received. Shutting down gracefully...');
-  server.close(() => {
-    console.log('Server closed.');
-    process.exit(0);
+  const server = app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📋 Environment: ${process.env.NODE_ENV || 'development'}`);
   });
-});
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  server.close(() => process.exit(1));
-});
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received. Shutting down gracefully...');
+    server.close(() => {
+      console.log('Server closed.');
+      process.exit(0);
+    });
+  });
+
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    server.close(() => process.exit(1));
+  });
+};
+
+startServer();
