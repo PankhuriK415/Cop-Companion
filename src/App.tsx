@@ -12,14 +12,37 @@ function App() {
         {/* Navigation Bar */}
         <nav className="bg-slate-950 border-b border-slate-700 px-6 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="text-2xl font-bold text-white hover:text-slate-200">
+            <Link
+              to="/"
+              className="text-2xl font-bold text-white hover:text-slate-200"
+            >
               Case Companion
             </Link>
             <div className="flex gap-6">
-              <Link to="/" className="text-slate-300 hover:text-white transition">Home</Link>
-              <Link to="/dashboard" className="text-slate-300 hover:text-white transition">Dashboard</Link>
-              <Link to="/cases" className="text-slate-300 hover:text-white transition">Cases</Link>
-              <Link to="/profile" className="text-slate-300 hover:text-white transition">Profile</Link>
+              <Link
+                to="/"
+                className="text-slate-300 hover:text-white transition"
+              >
+                Home
+              </Link>
+              <Link
+                to="/dashboard"
+                className="text-slate-300 hover:text-white transition"
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/cases"
+                className="text-slate-300 hover:text-white transition"
+              >
+                Cases
+              </Link>
+              <Link
+                to="/profile"
+                className="text-slate-300 hover:text-white transition"
+              >
+                Profile
+              </Link>
             </div>
           </div>
         </nav>
