@@ -19,11 +19,12 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const devAccounts: Record<UserRole, { username: string; password: string }> = {
-    officer: { username: "officer_sharma", password: "Password@123" },
-    victim: { username: "victim_amit", password: "Password@123" },
-    criminal: { username: "criminal_rajan", password: "Password@123" },
-  };
+  const devAccounts: Record<UserRole, { username: string; password: string }> =
+    {
+      officer: { username: "officer_sharma", password: "Password@123" },
+      victim: { username: "victim_amit", password: "Password@123" },
+      criminal: { username: "criminal_rajan", password: "Password@123" },
+    };
 
   const handleDevLogin = async (selectedRole: UserRole) => {
     setError("");
@@ -214,7 +215,9 @@ export default function Login() {
 
             {mode === "login" && (
               <div className="pt-1">
-                <p className="text-xs font-medium text-slate-300 mb-2">Quick Dev Login</p>
+                <p className="text-xs font-medium text-slate-300 mb-2">
+                  Quick Dev Login
+                </p>
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
