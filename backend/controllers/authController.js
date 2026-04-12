@@ -1,10 +1,10 @@
-const bcrypt = require('bcryptjs');
-const User = require('../models/User');
-const LoginLog = require('../models/LoginLog');
-const Officer = require('../models/Officer');
-const Victim = require('../models/Victim');
-const Criminal = require('../models/Criminal');
-const generateToken = require('../utils/generateToken');
+const bcrypt = require("bcryptjs");
+const User = require("../models/User");
+const LoginLog = require("../models/LoginLog");
+const Officer = require("../models/Officer");
+const Victim = require("../models/Victim");
+const Criminal = require("../models/Criminal");
+const generateToken = require("../utils/generateToken");
 
 const roleModelMap = {
   officer: Officer,
@@ -12,22 +12,45 @@ const roleModelMap = {
   criminal: Criminal,
 };
 
+const roleIdKeyMap = {
+  officer: "Officer_ID",
+  victim: "Victim_ID",
+  criminal: "Criminal_ID",
+};
+
+const createRoleRecord = async (role, username) => {
+  if (role === "officer") {
+    return Officer.create({ Officer_Name: username });
+  }
+
+  if (role === "victim") {
+    return Victim.create({ Victim_Name: username });
+  }
+
+  return Criminal.create({ Criminal_Name: username });
+};
+
 const login = async (req, res, next) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    return res.status(400).json({ success: false, message: 'Username and password are required.' });
+    return res
+      .status(400)
+      .json({ success: false, message: "Username and password are required." });
   }
 
   try {
     const user = await User.findOne({ where: { Username: username } });
 
     if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials.' });
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials." });
     }
 
     const storedPassword = user.Password;
-    const isBcryptHash = typeof storedPassword === 'string' && /^\$2[aby]\$/.test(storedPassword);
+    const isBcryptHash =
+      typeof storedPassword === "string" && /^\$2[aby]\$/.test(storedPassword);
     let isMatch = false;
 
     if (isBcryptHash) {
@@ -41,13 +64,16 @@ const login = async (req, res, next) => {
     }
 
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials.' });
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials." });
     }
 
     await user.update({ Last_Login: new Date() });
     await LoginLog.create({ Username: user.Username, Login_Time: new Date() });
 
-    const role = typeof user.Role === 'string' ? user.Role.toLowerCase() : user.Role;
+    const role =
+      typeof user.Role === "string" ? user.Role.toLowerCase() : user.Role;
     const token = generateToken({
       login_id: user.Login_ID,
       role,
@@ -56,7 +82,7 @@ const login = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: 'Login successful.',
+      message: "Login successful.",
       token,
       user: {
         login_id: user.Login_ID,
@@ -71,48 +97,60 @@ const login = async (req, res, next) => {
 };
 
 const signUp = async (req, res, next) => {
-  const { username, password, role, user_id, admin_key } = req.body;
+  const { username, password, role, admin_key } = req.body;
   const requiredAdminKey = process.env.ADMIN_SIGNUP_KEY;
 
-  if (!username || !password || !role || !user_id || !admin_key) {
-    return res.status(400).json({ success: false, message: 'Username, password, role, user_id, and admin_key are required.' });
+  if (!username || !password || !role || !admin_key) {
+    return res.status(400).json({
+      success: false,
+      message: "Username, password, role, and admin_key are required.",
+    });
   }
 
   if (!requiredAdminKey || admin_key !== requiredAdminKey) {
-    return res.status(403).json({ success: false, message: 'Invalid admin key.' });
+    return res
+      .status(403)
+      .json({ success: false, message: "Invalid admin key." });
   }
 
   const normalizedRole = String(role).toLowerCase();
-  const validRoles = ['officer', 'victim', 'criminal'];
+  const validRoles = ["officer", "victim", "criminal"];
 
   if (!validRoles.includes(normalizedRole)) {
-    return res.status(400).json({ success: false, message: 'Role must be one of officer, victim, or criminal.' });
+    return res.status(400).json({
+      success: false,
+      message: "Role must be one of officer, victim, or criminal.",
+    });
   }
 
   try {
-    const relatedModel = roleModelMap[normalizedRole];
-    const relatedRecord = await relatedModel.findByPk(user_id);
-
-    if (!relatedRecord) {
-      return res.status(400).json({ success: false, message: `No ${normalizedRole} record found with ID ${user_id}.` });
-    }
-
     const existingUser = await User.findOne({ where: { Username: username } });
     if (existingUser) {
-      return res.status(409).json({ success: false, message: 'Username is already taken.' });
+      return res
+        .status(409)
+        .json({ success: false, message: "Username is already taken." });
     }
+
+    const relatedModel = roleModelMap[normalizedRole];
+    if (!relatedModel) {
+      return res.status(400).json({ success: false, message: "Invalid role." });
+    }
+
+    const roleRecord = await createRoleRecord(normalizedRole, username);
+    const roleIdKey = roleIdKeyMap[normalizedRole];
+    const userId = roleRecord[roleIdKey];
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
       Username: username,
       Password: hashedPassword,
       Role: normalizedRole,
-      User_ID: user_id,
+      User_ID: userId,
     });
 
     res.status(201).json({
       success: true,
-      message: 'Sign up successful.',
+      message: "Sign up successful.",
       user: {
         login_id: newUser.Login_ID,
         username: newUser.Username,

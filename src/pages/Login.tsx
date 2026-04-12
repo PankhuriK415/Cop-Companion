@@ -14,7 +14,6 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<UserRole>("officer");
-  const [userId, setUserId] = useState("");
   const [adminKey, setAdminKey] = useState("");
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
@@ -35,12 +34,10 @@ export default function Login() {
           username,
           password,
           role,
-          user_id: Number(userId),
           admin_key: adminKey,
         });
         setSuccess("Signup successful. You can now sign in.");
         setPassword("");
-        setUserId("");
         setAdminKey("");
         setMode("login");
       }
@@ -150,21 +147,6 @@ export default function Login() {
 
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-1">
-                    Role Record ID
-                  </label>
-                  <input
-                    type="number"
-                    min={1}
-                    value={userId}
-                    onChange={(e) => setUserId(e.target.value)}
-                    required
-                    className="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 transition"
-                    placeholder="Enter officer/victim/criminal ID"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">
                     Admin Key
                   </label>
                   <input
@@ -224,6 +206,7 @@ export default function Login() {
               Signup requires admin key:{" "}
               <span className="text-slate-200">123456</span>
             </p>
+            <p className="mt-1">No role record ID needed anymore.</p>
           </div>
         </div>
       </div>
