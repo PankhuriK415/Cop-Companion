@@ -1,9 +1,25 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const policeStationSchema = new mongoose.Schema({
-  Station_Name: { type: String, required: true },
-  Location:     { type: String },
-  Contact_No:   { type: String },
-}, { timestamps: true });
+const PoliceStation = sequelize.define('PoliceStation', {
+  Station_ID: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  Station_Name: {
+    type: DataTypes.STRING(100),
+    allowNull: false,
+  },
+  Location: {
+    type: DataTypes.STRING(200),
+  },
+  Contact_No: {
+    type: DataTypes.STRING(20),
+  },
+}, {
+  tableName: 'police_station',
+  timestamps: false,
+});
 
-module.exports = mongoose.model('PoliceStation', policeStationSchema);
+module.exports = PoliceStation;

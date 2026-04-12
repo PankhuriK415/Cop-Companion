@@ -1,7 +1,7 @@
 {
   "name": "crime-record-management-system",
   "version": "1.0.0",
-  "description": "Crime Record Management System backend - MongoDB Atlas",
+  "description": "Crime Record Management System backend - MySQL",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -14,7 +14,8 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.0.3"
+    "mysql2": "^3.22.0",
+    "sequelize": "^6.37.8"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

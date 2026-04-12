@@ -1,16 +1,32 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const caseSchema = new mongoose.Schema({
-  Case_Date:   { type: Date, required: true },
-  Case_Status: {
-    type: String,
-    required: true,
-    enum: ['Open', 'Closed', 'Pending Review', 'Under Investigation', 'Dismissed'],
-    default: 'Open',
+const Case = sequelize.define('Case', {
+  Case_ID: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
   },
-  Description: { type: String },
-  Station_ID:  { type: mongoose.Schema.Types.ObjectId, ref: 'PoliceStation', required: true },
-  Officer_ID:  { type: mongoose.Schema.Types.ObjectId, ref: 'Officer', required: true },
-}, { timestamps: true });
+  Case_Date: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+  Case_Status: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+  },
+  Description: {
+    type: DataTypes.TEXT,
+  },
+  Station_ID: {
+    type: DataTypes.INTEGER,
+  },
+  Officer_ID: {
+    type: DataTypes.INTEGER,
+  },
+}, {
+  tableName: 'cases',
+  timestamps: false,
+});
 
-module.exports = mongoose.model('Case', caseSchema);
+module.exports = Case;

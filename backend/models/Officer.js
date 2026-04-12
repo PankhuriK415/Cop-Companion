@@ -1,10 +1,28 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const officerSchema = new mongoose.Schema({
-  Officer_Name:  { type: String, required: true },
-  Officer_Rank:  { type: String },
-  Phone:         { type: String },
-  Station_ID:    { type: mongoose.Schema.Types.ObjectId, ref: 'PoliceStation' },
-}, { timestamps: true });
+const Officer = sequelize.define('Officer', {
+  Officer_ID: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  Officer_Name: {
+    type: DataTypes.STRING(100),
+    allowNull: false,
+  },
+  Officer_Rank: {
+    type: DataTypes.STRING(50),
+  },
+  Phone: {
+    type: DataTypes.STRING(20),
+  },
+  Station_ID: {
+    type: DataTypes.INTEGER,
+  },
+}, {
+  tableName: 'officer',
+  timestamps: false,
+});
 
-module.exports = mongoose.model('Officer', officerSchema);
+module.exports = Officer;

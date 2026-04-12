@@ -1,9 +1,25 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const firSchema = new mongoose.Schema({
-  FIR_Date:  { type: Date, required: true },
-  Case_ID:   { type: mongoose.Schema.Types.ObjectId, ref: 'Case', required: true },
-  Victim_ID: { type: mongoose.Schema.Types.ObjectId, ref: 'Victim', required: true },
-}, { timestamps: true });
+const FIR = sequelize.define('FIR', {
+  FIR_No: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  FIR_Date: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+  Case_ID: {
+    type: DataTypes.INTEGER,
+  },
+  Victim_ID: {
+    type: DataTypes.INTEGER,
+  },
+}, {
+  tableName: 'fir',
+  timestamps: false,
+});
 
-module.exports = mongoose.model('FIR', firSchema);
+module.exports = FIR;
