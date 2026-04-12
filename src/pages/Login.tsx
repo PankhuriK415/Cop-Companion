@@ -19,6 +19,31 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const devAccounts: Record<UserRole, { username: string; password: string }> = {
+    officer: { username: "officer_sharma", password: "Password@123" },
+    victim: { username: "victim_amit", password: "Password@123" },
+    criminal: { username: "criminal_rajan", password: "Password@123" },
+  };
+
+  const handleDevLogin = async (selectedRole: UserRole) => {
+    setError("");
+    setSuccess("");
+    setLoading(true);
+
+    try {
+      const account = devAccounts[selectedRole];
+      await login(account.username, account.password);
+      navigate("/dashboard");
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Dev login failed. Check demo account data in database.";
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
@@ -186,20 +211,52 @@ export default function Login() {
                   ? "Sign In"
                   : "Sign Up"}
             </button>
+
+            {mode === "login" && (
+              <div className="pt-1">
+                <p className="text-xs font-medium text-slate-300 mb-2">Quick Dev Login</p>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    disabled={loading}
+                    onClick={() => handleDevLogin("officer")}
+                    className="bg-slate-700 hover:bg-slate-600 disabled:bg-slate-700/60 disabled:cursor-not-allowed text-slate-100 rounded-lg px-3 py-2 text-xs font-medium transition"
+                  >
+                    Officer
+                  </button>
+                  <button
+                    type="button"
+                    disabled={loading}
+                    onClick={() => handleDevLogin("victim")}
+                    className="bg-slate-700 hover:bg-slate-600 disabled:bg-slate-700/60 disabled:cursor-not-allowed text-slate-100 rounded-lg px-3 py-2 text-xs font-medium transition"
+                  >
+                    Victim
+                  </button>
+                  <button
+                    type="button"
+                    disabled={loading}
+                    onClick={() => handleDevLogin("criminal")}
+                    className="bg-slate-700 hover:bg-slate-600 disabled:bg-slate-700/60 disabled:cursor-not-allowed text-slate-100 rounded-lg px-3 py-2 text-xs font-medium transition"
+                  >
+                    Criminal
+                  </button>
+                </div>
+              </div>
+            )}
           </form>
 
           <div className="mt-6 p-4 bg-slate-700/50 rounded-lg text-xs text-slate-400">
             <p className="font-medium text-slate-300 mb-1">Demo Accounts:</p>
             <p>
-              Officer: <span className="text-slate-200">officer1</span> /
+              Officer: <span className="text-slate-200">officer_sharma</span> /
               Password@123
             </p>
             <p>
-              Victim: <span className="text-slate-200">victim1</span> /
+              Victim: <span className="text-slate-200">victim_amit</span> /
               Password@123
             </p>
             <p>
-              Criminal: <span className="text-slate-200">criminal1</span> /
+              Criminal: <span className="text-slate-200">criminal_rajan</span> /
               Password@123
             </p>
             <p className="mt-2">
