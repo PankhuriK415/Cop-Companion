@@ -24,65 +24,66 @@ import Profile from "./pages/Profile";
 function NavBar() {
   const { user, logout } = useAuth();
   const location = useLocation();
-  const isActive = (path: string) =>
-    location.pathname === path
-      ? "text-white font-semibold"
-      : "text-slate-400 hover:text-white transition";
+  
+  const isActive = (path: string) => location.pathname === path;
 
   if (!user) return null;
 
   return (
-    <nav className="bg-slate-950 border-b border-slate-700 px-6 py-3">
-      <div className="flex items-center justify-between">
+    <nav className="sticky top-0 z-50 w-full border-b border-white/5 bg-slate-950/60 backdrop-blur-xl supports-[backdrop-filter]:bg-slate-950/40 px-6 py-3 font-medium">
+      <div className="mx-auto flex max-w-7xl items-center justify-between">
         <Link
           to="/dashboard"
-          className="text-xl font-bold text-white hover:text-slate-200"
+          className="flex items-center gap-2 text-xl font-bold tracking-tight text-white hover:opacity-80 transition-opacity"
         >
-          Case Companion
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-lg shadow-blue-500/20">
+            <span className="text-sm font-black">C</span>
+          </div>
+          Case<span className="font-light text-slate-300">Companion</span>
         </Link>
-        <div className="flex gap-5 text-sm items-center">
-          <Link to="/dashboard" className={isActive("/dashboard")}>
+        
+        <div className="flex gap-1 text-sm items-center bg-slate-900/50 p-1 rounded-full border border-white/5">
+          <Link 
+            to="/dashboard" 
+            className={`px-4 py-1.5 rounded-full transition-all ${isActive("/dashboard") ? "bg-white/10 text-white shadow-sm" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"}`}
+          >
             Dashboard
           </Link>
 
           {/* Officer-only nav items */}
           {user.role === "officer" && (
             <>
-              <Link to="/cases" className={isActive("/cases")}>
-                Cases
-              </Link>
-              <Link to="/criminals" className={isActive("/criminals")}>
-                Criminals
-              </Link>
-              <Link to="/victims" className={isActive("/victims")}>
-                Victims
-              </Link>
-              <Link to="/evidence" className={isActive("/evidence")}>
-                Evidence
-              </Link>
-              <Link to="/arrests" className={isActive("/arrests")}>
-                Arrests
-              </Link>
-              <Link to="/firs" className={isActive("/firs")}>
-                FIRs
-              </Link>
+              <div className="w-px h-4 bg-slate-700 mx-1"></div>
+              {["/cases", "/criminals", "/victims", "/evidence", "/arrests", "/firs"].map(path => (
+                <Link 
+                  key={path}
+                  to={path} 
+                  className={`px-4 py-1.5 rounded-full transition-all capitalize ${isActive(path) ? "bg-white/10 text-white shadow-sm" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"}`}
+                >
+                  {path.substring(1)}
+                </Link>
+              ))}
             </>
           )}
 
-          <Link to="/profile" className={isActive("/profile")}>
+          <div className="w-px h-4 bg-slate-700 mx-1"></div>
+          <Link 
+            to="/profile" 
+            className={`px-4 py-1.5 rounded-full transition-all ${isActive("/profile") ? "bg-white/10 text-white shadow-sm" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"}`}
+          >
             Profile
           </Link>
-
-          <button
-            onClick={() => {
-              logout();
-              window.location.href = "/login";
-            }}
-            className="text-slate-400 hover:text-red-400 transition text-sm"
-          >
-            Sign out
-          </button>
         </div>
+
+        <button
+          onClick={() => {
+            logout();
+            window.location.href = "/login";
+          }}
+          className="group flex items-center justify-center rounded-full border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm text-slate-300 transition-all hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30"
+        >
+          Sign out
+        </button>
       </div>
     </nav>
   );
