@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../lib/apiClient";
+import { Plus, Edit2, Trash2, X, ShieldAlert, Loader2 } from "lucide-react";
 
 interface ArrestItem {
   _id: string;
@@ -20,7 +21,7 @@ interface CaseOption {
 }
 
 const inputCls =
-  "w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500";
+  "w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all shadow-inner";
 const emptyForm = {
   Arrest_Date: "",
   Criminal_ID: "",
@@ -57,6 +58,7 @@ export default function Arrests() {
   useEffect(() => {
     fetchData();
   }, [page]);
+  
   useEffect(() => {
     api
       .get("/officer/criminals?limit=100")
@@ -104,7 +106,7 @@ export default function Arrests() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this arrest record?")) return;
+    if (!confirm("Confirm deletion of this arrest record?")) return;
     try {
       await api.delete(`/officer/arrests/${id}`);
       fetchData();
@@ -116,183 +118,206 @@ export default function Arrests() {
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-4xl font-bold text-white">Arrests</h1>
-        <button
-          onClick={openCreate}
-          className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition"
-        >
-          + Record Arrest
-        </button>
-      </div>
+    <div className="min-h-screen bg-slate-950 p-6 md:p-12 relative overflow-hidden font-sans selection:bg-blue-500/30">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-blue-900/10 via-slate-950 to-black z-0 pointer-events-none" />
 
-      <div className="bg-slate-800 rounded-lg overflow-hidden border border-slate-700">
-        {loading ? (
-          <div className="text-slate-400 p-6">Loading...</div>
-        ) : (
-          <table className="w-full">
-            <thead className="bg-slate-900 border-b border-slate-700">
-              <tr>
-                {[
-                  "Criminal",
-                  "Arrest Date",
-                  "Charges",
-                  "Case Status",
-                  "Actions",
-                ].map((h) => (
-                  <th key={h} className="px-6 py-4 text-left text-slate-300">
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-700">
-              {items.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-6 py-8 text-slate-400 text-center"
-                  >
-                    No arrest records found.
-                  </td>
-                </tr>
-              ) : (
-                items.map((a) => (
-                  <tr key={a._id} className="hover:bg-slate-700/50 transition">
-                    <td className="px-6 py-4 text-white font-medium">
-                      {a.Criminal_ID?.Criminal_Name || "—"}
-                    </td>
-                    <td className="px-6 py-4 text-slate-400">
-                      {new Date(a.Arrest_Date).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 text-slate-400 max-w-xs truncate">
-                      {a.Charges || "—"}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="px-2 py-1 rounded-full text-xs font-semibold bg-slate-700 text-slate-300">
-                        {a.Case_ID?.Case_Status || "—"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 flex gap-3">
-                      <button
-                        onClick={() => openEdit(a)}
-                        className="text-blue-400 hover:text-blue-300 text-sm font-medium"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(a._id)}
-                        className="text-red-400 hover:text-red-300 text-sm font-medium"
-                      >
-                        Delete
-                      </button>
-                    </td>
+      <div className="relative z-10 max-w-7xl mx-auto animate-fade-in">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight font-['Outfit'] mb-2 flex items-center gap-3">
+              <ShieldAlert className="h-10 w-10 text-red-500" />
+              Arrest <span className="text-gradient">Records</span>
+            </h1>
+            <p className="text-slate-400 text-sm">Official logs of apprehensions and detentions.</p>
+          </div>
+          <button
+            onClick={openCreate}
+            className="flex items-center gap-2 px-6 py-3 bg-white hover:bg-slate-200 text-slate-950 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] active:scale-95"
+          >
+            <Plus className="h-5 w-5" /> File Arrest
+          </button>
+        </div>
+
+        <div className="glass-dark rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden">
+          {loading ? (
+             <div className="p-12 flex flex-col items-center justify-center text-slate-400">
+                <Loader2 className="h-8 w-8 animate-spin mb-4 text-red-500" />
+                <p>Retrieving arrest histories...</p>
+             </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left whitespace-nowrap">
+                <thead className="bg-black/20 text-xs uppercase tracking-wider text-slate-400 font-semibold border-b border-white/5">
+                  <tr>
+                    {[
+                      "Apprehended Target",
+                      "Timestamp",
+                      "Formal Charges",
+                      "Case Link",
+                      "Actions",
+                    ].map((h) => (
+                      <th key={h} className={h === "Actions" ? "px-8 py-5 text-right" : "px-8 py-5"}>
+                        {h}
+                      </th>
+                    ))}
                   </tr>
-                ))
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {items.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="px-8 py-12 text-slate-400 text-center">
+                         <div className="flex flex-col items-center justify-center">
+                          <ShieldAlert className="h-12 w-12 text-slate-700 mb-3" />
+                          <p className="text-lg font-medium text-slate-300">No records found.</p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    items.map((a) => (
+                      <tr key={a._id} className="hover:bg-white/[0.02] transition duration-200 group">
+                        <td className="px-8 py-5 text-slate-200 font-semibold">
+                          {a.Criminal_ID?.Criminal_Name || "—"}
+                        </td>
+                        <td className="px-8 py-5 text-slate-400 font-mono text-sm">
+                          {a.Arrest_Date ? new Date(a.Arrest_Date).toLocaleDateString() : "—"}
+                        </td>
+                        <td className="px-8 py-5 text-slate-400 max-w-xs truncate">
+                          {a.Charges || "—"}
+                        </td>
+                        <td className="px-8 py-5">
+                          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 border border-slate-700 text-slate-300">
+                            {a.Case_ID?.Case_Status || "Unknown"}
+                          </span>
+                        </td>
+                        <td className="px-8 py-5 text-right space-x-3 opacity-100 sm:opacity-50 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => openEdit(a)}
+                            className="p-2 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors inline-block"
+                            title="Edit Record"
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(a._id)}
+                            className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors inline-block"
+                            title="Delete Record"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {totalPages > 1 && (
+          <div className="flex justify-center gap-2 mt-8">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <button
+                key={p}
+                onClick={() => setPage(p)}
+                className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold transition-all ${p === page ? "bg-white text-slate-950 shadow-lg" : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white"}`}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {showModal && (
+          <Modal
+            title={editing ? "Update Arrest Protocol" : "File New Arrest"}
+            onClose={() => setShowModal(false)}
+          >
+            <div className="space-y-5 mt-4">
+              <Field label="Apprehended Criminal *">
+                <select
+                  value={form.Criminal_ID}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, Criminal_ID: e.target.value }))
+                  }
+                  className={inputCls}
+                >
+                  <option value="">Select registry match</option>
+                  {criminals.map((c) => (
+                    <option key={c._id} value={c._id}>
+                      {c.Criminal_Name}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Linked Case *">
+                  <select
+                    value={form.Case_ID}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, Case_ID: e.target.value }))
+                    }
+                    className={inputCls}
+                  >
+                    <option value="">Select case</option>
+                    {cases.map((c) => (
+                      <option key={c._id} value={c._id}>
+                        {c._id.slice(-6)} — {c.Case_Status}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <Field label="Arrest Date *">
+                  <input
+                    type="date"
+                    value={form.Arrest_Date}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, Arrest_Date: e.target.value }))
+                    }
+                    className={inputCls}
+                  />
+                </Field>
+              </div>
+              <Field label="Formal Charges">
+                <textarea
+                  value={form.Charges}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, Charges: e.target.value }))
+                  }
+                  className={`${inputCls} resize-none h-24 leading-relaxed`}
+                  placeholder="e.g. Armed Robbery under PC 211. State exact clauses."
+                />
+              </Field>
+              {error && (
+                 <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium">
+                  {error}
+                </div>
               )}
-            </tbody>
-          </table>
+              <div className="pt-4">
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="w-full bg-white hover:bg-slate-200 text-slate-950 disabled:opacity-50 disabled:cursor-not-allowed font-bold rounded-xl py-3.5 transition-all shadow-lg active:scale-95 flex justify-center items-center gap-2"
+                >
+                  {saving ? (
+                    <><Loader2 className="h-5 w-5 animate-spin" /> Processing...</>
+                  ) : (
+                    "Authorize Record"
+                  )}
+                </button>
+              </div>
+            </div>
+          </Modal>
         )}
       </div>
-
-      {totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-4">
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-            <button
-              key={p}
-              onClick={() => setPage(p)}
-              className={`px-3 py-1 rounded ${p === page ? "bg-blue-600 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"}`}
-            >
-              {p}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {showModal && (
-        <Modal
-          title={editing ? "Edit Arrest" : "Record Arrest"}
-          onClose={() => setShowModal(false)}
-        >
-          <div className="space-y-4">
-            <Field label="Criminal *">
-              <select
-                value={form.Criminal_ID}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, Criminal_ID: e.target.value }))
-                }
-                className={inputCls}
-              >
-                <option value="">Select criminal</option>
-                {criminals.map((c) => (
-                  <option key={c._id} value={c._id}>
-                    {c.Criminal_Name}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Case *">
-              <select
-                value={form.Case_ID}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, Case_ID: e.target.value }))
-                }
-                className={inputCls}
-              >
-                <option value="">Select case</option>
-                {cases.map((c) => (
-                  <option key={c._id} value={c._id}>
-                    {c.Description || c._id} ({c.Case_Status})
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Arrest Date *">
-              <input
-                type="date"
-                value={form.Arrest_Date}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, Arrest_Date: e.target.value }))
-                }
-                className={inputCls}
-              />
-            </Field>
-            <Field label="Charges">
-              <textarea
-                value={form.Charges}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, Charges: e.target.value }))
-                }
-                className={`${inputCls} resize-none h-20`}
-                placeholder="e.g. Robbery under IPC 392"
-              />
-            </Field>
-            {error && <p className="text-red-400 text-sm">{error}</p>}
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 text-white font-semibold rounded-lg py-2.5 transition"
-            >
-              {saving ? "Saving..." : "Save"}
-            </button>
-          </div>
-        </Modal>
-      )}
     </div>
   );
 }
 
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div>
-      <label className="block text-sm font-medium text-slate-300 mb-1">
+    <div className="space-y-1.5">
+      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">
         {label}
       </label>
       {children}
@@ -300,25 +325,20 @@ function Field({
   );
 }
 
-function Modal({
-  title,
-  onClose,
-  children,
-}: {
-  title: string;
-  onClose: () => void;
-  children: React.ReactNode;
-}) {
+function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
-      <div className="bg-slate-800 border border-slate-700 rounded-xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-5">
-          <h3 className="text-xl font-bold text-white">{title}</h3>
+    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 px-4 animate-fade-in">
+      <div 
+        className="glass-dark border border-white/10 rounded-2xl w-full max-w-md p-8 max-h-[90vh] overflow-y-auto shadow-2xl"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-2xl font-extrabold text-white tracking-tight">{title}</h3>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white text-2xl leading-none"
+            className="p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
           >
-            &times;
+            <X className="h-5 w-5" />
           </button>
         </div>
         {children}

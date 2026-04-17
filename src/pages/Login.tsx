@@ -81,9 +81,25 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-full px-4">
-      <div className="w-full max-w-md">
-        <div className="bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-2xl">
+    <div className="relative flex justify-center items-center min-h-screen bg-slate-950 px-4 py-12 overflow-hidden selection:bg-blue-500/30">
+      
+      {/* Dynamic Background matching Home.tsx */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black z-0" />
+      <div className="absolute top-[20%] left-[20%] w-[50%] h-[50%] rounded-full bg-blue-600/10 blur-[150px]" />
+      <div className="absolute bottom-[20%] right-[20%] w-[40%] h-[40%] rounded-full bg-emerald-600/10 blur-[120px]" />
+
+      <Link to="/" className="absolute top-8 left-8 flex items-center gap-2 text-slate-400 hover:text-white transition-colors z-20 group">
+        <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+        <span className="text-sm font-medium">Back to Portal</span>
+      </Link>
+
+      <div className="w-full max-w-md relative z-10 animate-fade-in" style={{ animationDuration: "0.5s" }}>
+        {/* Floating icon */}
+        <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-blue-500/20 mb-8 transform -rotate-6 hover:rotate-0 transition-transform">
+          <ShieldAlert className="h-8 w-8 text-white" />
+        </div>
+
+        <div className="glass-dark border border-white/10 rounded-2xl p-8 md:p-10 shadow-[0_30px_60px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-white">Case Companion</h1>
             <p className="text-slate-400 mt-2">
@@ -124,9 +140,9 @@ export default function Login() {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">
                 Username
               </label>
               <input
@@ -139,8 +155,8 @@ export default function Login() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">
                 Password
               </label>
               <input
@@ -194,7 +210,8 @@ export default function Login() {
             )}
 
             {error && (
-              <div className="bg-red-900/50 border border-red-700 text-red-300 rounded-lg px-4 py-3 text-sm">
+              <div className="bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl px-4 py-3 text-sm flex items-center gap-2 animate-[slide-in_0.2s_ease-out]">
+                <div className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
                 {error}
               </div>
             )}
@@ -202,7 +219,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-semibold rounded-lg px-4 py-3 transition"
+              className="w-full group relative overflow-hidden bg-white text-slate-950 font-bold rounded-xl px-4 py-3.5 transition-all hover:bg-slate-200 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-white/5"
             >
               {loading
                 ? mode === "login"
