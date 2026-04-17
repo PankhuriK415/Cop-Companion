@@ -1,7 +1,8 @@
 import { useState, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../lib/apiClient";
+import { ArrowLeft, ShieldAlert } from "lucide-react";
 
 type AuthMode = "login" | "signup";
 type UserRole = "officer" | "victim" | "criminal";
@@ -32,8 +33,10 @@ export default function Login() {
     setLoading(true);
 
     try {
+      console.log("[Login] handleDevLogin", selectedRole);
       const account = devAccounts[selectedRole];
       await login(account.username, account.password);
+      console.log("[Login] dev login succeeded");
       navigate("/dashboard");
     } catch (err: unknown) {
       const msg =
@@ -50,10 +53,12 @@ export default function Login() {
     setError("");
     setSuccess("");
     setLoading(true);
+    console.log("[Login] handleSubmit called", { username, mode });
 
     try {
       if (mode === "login") {
         await login(username, password);
+        console.log("[Login] login succeeded");
         navigate("/dashboard");
       } else {
         await api.post("/auth/signup", {
@@ -82,18 +87,23 @@ export default function Login() {
 
   return (
     <div className="relative flex justify-center items-center min-h-screen bg-slate-950 px-4 py-12 overflow-hidden selection:bg-blue-500/30">
-      
       {/* Dynamic Background matching Home.tsx */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black z-0" />
       <div className="absolute top-[20%] left-[20%] w-[50%] h-[50%] rounded-full bg-blue-600/10 blur-[150px]" />
       <div className="absolute bottom-[20%] right-[20%] w-[40%] h-[40%] rounded-full bg-emerald-600/10 blur-[120px]" />
 
-      <Link to="/" className="absolute top-8 left-8 flex items-center gap-2 text-slate-400 hover:text-white transition-colors z-20 group">
+      <Link
+        to="/"
+        className="absolute top-8 left-8 flex items-center gap-2 text-slate-400 hover:text-white transition-colors z-20 group"
+      >
         <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
         <span className="text-sm font-medium">Back to Portal</span>
       </Link>
 
-      <div className="w-full max-w-md relative z-10 animate-fade-in" style={{ animationDuration: "0.5s" }}>
+      <div
+        className="w-full max-w-md relative z-10 animate-fade-in"
+        style={{ animationDuration: "0.5s" }}
+      >
         {/* Floating icon */}
         <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-blue-500/20 mb-8 transform -rotate-6 hover:rotate-0 transition-transform">
           <ShieldAlert className="h-8 w-8 text-white" />
