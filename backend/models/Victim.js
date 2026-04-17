@@ -1,10 +1,28 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const victimSchema = new mongoose.Schema({
-  Victim_Name: { type: String, required: true },
-  Gender:      { type: String, enum: ['Male', 'Female', 'Other'] },
-  Phone:       { type: String },
-  Address:     { type: String },
-}, { timestamps: true });
+const Victim = sequelize.define('Victim', {
+  Victim_ID: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  Victim_Name: {
+    type: DataTypes.STRING(100),
+    allowNull: false,
+  },
+  Gender: {
+    type: DataTypes.ENUM('Male', 'Female', 'Other'),
+  },
+  Phone: {
+    type: DataTypes.STRING(20),
+  },
+  Address: {
+    type: DataTypes.TEXT,
+  },
+}, {
+  tableName: 'victim',
+  timestamps: false,
+});
 
-module.exports = mongoose.model('Victim', victimSchema);
+module.exports = Victim;
