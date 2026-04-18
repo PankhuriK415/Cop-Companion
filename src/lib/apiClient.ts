@@ -11,6 +11,23 @@ apiClient.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  // Normalize payload: convert numeric ID strings to numbers for keys like 'Station_ID', 'Case_ID', 'Criminal_ID', 'Victim_ID', 'Officer_ID'
+  try {
+    const data = config.data;
+    if (data && typeof data === "object" && !Array.isArray(data)) {
+      Object.keys(data).forEach((k) => {
+        const v = (data as any)[k];
+        if (typeof v === "string" && (k.endsWith("ID") || k.endsWith("_ID"))) {
+          // If string is numeric, convert to number
+          if (/^-?\d+$/.test(v)) {
+            (data as any)[k] = Number(v);
+          }
+        }
+      });
+    }
+  } catch (err) {
+    // silently ignore coercion errors
+  }
   return config;
 });
 

@@ -3,20 +3,21 @@ import api from "../lib/apiClient";
 import { Search, Plus, Filter, Edit2, Trash2, X, FolderOpen, Loader2 } from "lucide-react";
 
 interface CaseItem {
-  _id: string;
+  Case_ID?: number;
+  _id?: any;
   Case_Date: string;
   Case_Status: string;
   Description: string;
-  Station_ID?: { _id: string; Station_Name: string };
-  Officer_ID?: { _id: string; Officer_Name: string };
+  Station_ID?: number | { Station_Name?: string } | null;
+  Officer_ID?: number | { Officer_Name?: string } | null;
 }
 
 interface Station {
-  _id: string;
+  Station_ID: number;
   Station_Name: string;
 }
 interface Officer {
-  _id: string;
+  Officer_ID: number;
   Officer_Name: string;
 }
 
@@ -105,8 +106,8 @@ export default function Cases() {
       Case_Date: c.Case_Date ? c.Case_Date.slice(0, 10) : "",
       Case_Status: c.Case_Status,
       Description: c.Description || "",
-      Station_ID: c.Station_ID?._id || "",
-      Officer_ID: c.Officer_ID?._id || "",
+      Station_ID: typeof c.Station_ID === 'number' ? String(c.Station_ID) : (c.Station_ID && (c.Station_ID as any).Station_ID ? String((c.Station_ID as any).Station_ID) : ""),
+      Officer_ID: typeof c.Officer_ID === 'number' ? String(c.Officer_ID) : (c.Officer_ID && (c.Officer_ID as any).Officer_ID ? String((c.Officer_ID as any).Officer_ID) : ""),
     });
     setError("");
     setShowModal(true);
@@ -116,10 +117,17 @@ export default function Cases() {
     setError("");
     setSaving(true);
     try {
+      const payload = {
+        Case_Date: form.Case_Date,
+        Case_Status: form.Case_Status,
+        Description: form.Description,
+        Station_ID: form.Station_ID ? Number(form.Station_ID) : null,
+        Officer_ID: form.Officer_ID ? Number(form.Officer_ID) : null,
+      };
       if (editing) {
-        await api.put(`/officer/cases/${editing._id}`, form);
+        await api.put(`/officer/cases/${editing.Case_ID || editing._id}`, payload);
       } else {
-        await api.post("/officer/cases", form);
+        await api.post("/officer/cases", payload);
       }
       setShowModal(false);
       fetchCases();
@@ -239,10 +247,14 @@ export default function Cases() {
                           </span>
                         </td>
                         <td className="px-8 py-5 text-slate-300">
-                          {c.Officer_ID?.Officer_Name || "—"}
+                          {typeof c.Officer_ID === 'number'
+                            ? officers.find((o) => o.Officer_ID === c.Officer_ID)?.Officer_Name || "—"
+                            : (c.Officer_ID as any)?.Officer_Name || "—"}
                         </td>
                         <td className="px-8 py-5 text-slate-300 font-medium">
-                          {c.Station_ID?.Station_Name || "—"}
+                          {typeof c.Station_ID === 'number'
+                            ? stations.find((s) => s.Station_ID === c.Station_ID)?.Station_Name || "—"
+                            : (c.Station_ID as any)?.Station_Name || "—"}
                         </td>
                         <td className="px-8 py-5 text-slate-400 font-mono text-sm">
                           {c.Case_Date ? new Date(c.Case_Date).toLocaleDateString() : "—"}
@@ -330,7 +342,7 @@ export default function Cases() {
                   >
                     <option value="">Select Station</option>
                     {stations.map((s) => (
-                      <option key={s._id} value={s._id}>{s.Station_Name}</option>
+                      <option key={s.Station_ID} value={String(s.Station_ID)}>{s.Station_Name}</option>
                     ))}
                   </select>
                 </Field>
@@ -342,7 +354,7 @@ export default function Cases() {
                   >
                     <option value="">Select Officer</option>
                     {officers.map((o) => (
-                      <option key={o._id} value={o._id}>{o.Officer_Name}</option>
+                      <option key={o.Officer_ID} value={String(o.Officer_ID)}>{o.Officer_Name}</option>
                     ))}
                   </select>
                 </Field>

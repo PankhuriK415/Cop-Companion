@@ -3,19 +3,20 @@ import api from "../lib/apiClient";
 import { Plus, Edit2, Trash2, X, ShieldAlert, Loader2 } from "lucide-react";
 
 interface ArrestItem {
-  _id: string;
+  Arrest_ID?: number;
+  _id?: any;
   Arrest_Date: string;
   Charges?: string;
-  Criminal_ID?: { _id: string; Criminal_Name: string };
-  Case_ID?: { _id: string; Case_Status: string };
+  Criminal_ID?: number | null;
+  Case_ID?: number | null;
 }
 
 interface Criminal {
-  _id: string;
+  Criminal_ID: number;
   Criminal_Name: string;
 }
 interface CaseOption {
-  _id: string;
+  Case_ID: number;
   Description: string;
   Case_Status: string;
 }
@@ -80,8 +81,8 @@ export default function Arrests() {
     setEditing(a);
     setForm({
       Arrest_Date: a.Arrest_Date ? a.Arrest_Date.slice(0, 10) : "",
-      Criminal_ID: a.Criminal_ID?._id || "",
-      Case_ID: a.Case_ID?._id || "",
+      Criminal_ID: a.Criminal_ID ? String(a.Criminal_ID) : "",
+      Case_ID: a.Case_ID ? String(a.Case_ID) : "",
       Charges: a.Charges || "",
     });
     setError("");
@@ -92,8 +93,14 @@ export default function Arrests() {
     setError("");
     setSaving(true);
     try {
-      if (editing) await api.put(`/officer/arrests/${editing._id}`, form);
-      else await api.post("/officer/arrests", form);
+      const payload = {
+        Arrest_Date: form.Arrest_Date,
+        Criminal_ID: form.Criminal_ID ? Number(form.Criminal_ID) : null,
+        Case_ID: form.Case_ID ? Number(form.Case_ID) : null,
+        Charges: form.Charges,
+      };
+      if (editing) await api.put(`/officer/arrests/${editing.Arrest_ID || editing._id}`, payload);
+      else await api.post("/officer/arrests", payload);
       setShowModal(false);
       fetchData();
     } catch (e: unknown) {
@@ -176,7 +183,7 @@ export default function Arrests() {
                     items.map((a) => (
                       <tr key={a._id} className="hover:bg-white/[0.02] transition duration-200 group">
                         <td className="px-8 py-5 text-slate-200 font-semibold">
-                          {a.Criminal_ID?.Criminal_Name || "—"}
+                          {criminals.find((c) => c.Criminal_ID === a.Criminal_ID)?.Criminal_Name || "—"}
                         </td>
                         <td className="px-8 py-5 text-slate-400 font-mono text-sm">
                           {a.Arrest_Date ? new Date(a.Arrest_Date).toLocaleDateString() : "—"}
@@ -244,7 +251,7 @@ export default function Arrests() {
                 >
                   <option value="">Select registry match</option>
                   {criminals.map((c) => (
-                    <option key={c._id} value={c._id}>
+                    <option key={c.Criminal_ID} value={String(c.Criminal_ID)}>
                       {c.Criminal_Name}
                     </option>
                   ))}
@@ -261,8 +268,8 @@ export default function Arrests() {
                   >
                     <option value="">Select case</option>
                     {cases.map((c) => (
-                      <option key={c._id} value={c._id}>
-                        {c._id.slice(-6)} — {c.Case_Status}
+                      <option key={c.Case_ID} value={String(c.Case_ID)}>
+                        {(c.Case_ID ? String(c.Case_ID).slice(-6) : "—")} — {c.Case_Status}
                       </option>
                     ))}
                   </select>

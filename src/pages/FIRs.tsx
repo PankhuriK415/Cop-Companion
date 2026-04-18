@@ -3,18 +3,19 @@ import api from "../lib/apiClient";
 import { Plus, Trash2, X, FileText, Loader2, UserPlus } from "lucide-react";
 
 interface FIRItem {
-  _id: string;
+  FIR_No?: number;
+  _id?: any;
   FIR_Date: string;
-  Victim_ID?: { _id: string; Victim_Name: string };
-  Case_ID?: { _id: string; Case_Status: string };
+  Victim_ID?: number | null;
+  Case_ID?: number | null;
 }
 
 interface VictimOption {
-  _id: string;
+  Victim_ID: number;
   Victim_Name: string;
 }
 interface CaseOption {
-  _id: string;
+  Case_ID: number;
   Description: string;
   Case_Status: string;
 }
@@ -93,7 +94,12 @@ export default function FIRs() {
     setError("");
     setSaving(true);
     try {
-      await api.post("/officer/firs", form);
+      const payload = {
+        FIR_Date: form.FIR_Date,
+        Case_ID: form.Case_ID ? Number(form.Case_ID) : null,
+        Victim_ID: form.Victim_ID ? Number(form.Victim_ID) : null,
+      };
+      await api.post("/officer/firs", payload);
       setShowModal(false);
       setForm(emptyForm);
       fetchData();
@@ -319,7 +325,7 @@ export default function FIRs() {
                   >
                     <option value="">Choose a victim profile</option>
                     {victims.map((v) => (
-                      <option key={v._id} value={v._id}>
+                      <option key={v.Victim_ID} value={String(v.Victim_ID)}>
                         {v.Victim_Name}
                       </option>
                     ))}
@@ -338,8 +344,8 @@ export default function FIRs() {
                   >
                     <option value="">Select linked case</option>
                     {cases.map((c) => (
-                      <option key={c._id} value={c._id}>
-                         {c._id.slice(-6)} — {c.Case_Status}
+                      <option key={c.Case_ID} value={String(c.Case_ID)}>
+                         {(c.Case_ID ? String(c.Case_ID).slice(-6) : "—")} — {c.Case_Status}
                       </option>
                     ))}
                   </select>

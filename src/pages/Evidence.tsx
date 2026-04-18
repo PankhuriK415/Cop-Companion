@@ -3,14 +3,15 @@ import api from "../lib/apiClient";
 import { Plus, Edit2, Trash2, X, Archive, Loader2 } from "lucide-react";
 
 interface EvidenceItem {
-  _id: string;
+  Evidence_ID?: number;
+  _id?: any;
   Evidence_Type: string;
   Description?: string;
-  Case_ID?: { _id: string; Case_Status: string; Description: string };
+  Case_ID?: number | null;
 }
 
 interface CaseOption {
-  _id: string;
+  Case_ID: number;
   Description: string;
   Case_Status: string;
 }
@@ -68,7 +69,7 @@ export default function Evidence() {
     setForm({
       Evidence_Type: e.Evidence_Type,
       Description: e.Description || "",
-      Case_ID: e.Case_ID?._id || "",
+      Case_ID: e.Case_ID ? String(e.Case_ID) : "",
     });
     setError("");
     setShowModal(true);
@@ -78,8 +79,13 @@ export default function Evidence() {
     setError("");
     setSaving(true);
     try {
-      if (editing) await api.put(`/officer/evidence/${editing._id}`, form);
-      else await api.post("/officer/evidence", form);
+      const payload = {
+        Evidence_Type: form.Evidence_Type,
+        Description: form.Description,
+        Case_ID: form.Case_ID ? Number(form.Case_ID) : null,
+      };
+      if (editing) await api.put(`/officer/evidence/${editing.Evidence_ID || editing._id}`, payload);
+      else await api.post("/officer/evidence", payload);
       setShowModal(false);
       fetchData();
     } catch (e: unknown) {
@@ -240,8 +246,8 @@ export default function Evidence() {
                 >
                   <option value="">Attach to a case file</option>
                   {cases.map((c) => (
-                    <option key={c._id} value={c._id}>
-                      {c.Description || c._id} — ({c.Case_Status})
+                    <option key={c.Case_ID} value={String(c.Case_ID)}>
+                      {c.Description || c.Case_ID} — ({c.Case_Status})
                     </option>
                   ))}
                 </select>
