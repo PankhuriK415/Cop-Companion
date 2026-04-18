@@ -267,7 +267,7 @@ export default function FIRs() {
         {showModal && (
           <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 px-4 animate-fade-in">
             <div 
-              className="glass-dark border border-white/10 rounded-2xl w-full max-w-md p-8 shadow-2xl"
+              className="glass-dark border border-white/10 rounded-2xl w-full max-w-md p-8 max-h-[90vh] overflow-y-auto shadow-2xl"
               onClick={e => e.stopPropagation()}
             >
               <div className="flex justify-between items-center mb-6">
@@ -371,7 +371,7 @@ export default function FIRs() {
         {/* Create Victim Modal (Nested) */}
         {showVictimModal && (
           <div className="fixed inset-0 bg-slate-950/90 flex items-center justify-center z-[60] px-4 animate-fade-in">
-            <div className="glass-dark border border-white/10 rounded-2xl w-full max-w-lg p-8 shadow-2xl">
+            <div className="glass-dark border border-white/10 rounded-2xl w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto shadow-2xl">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-2xl font-extrabold text-white tracking-tight">Register Victim</h3>
                 <button
