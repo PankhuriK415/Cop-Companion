@@ -59,7 +59,7 @@ export default function Arrests() {
   useEffect(() => {
     fetchData();
   }, [page]);
-  
+
   useEffect(() => {
     api
       .get("/officer/criminals?limit=100")
@@ -99,7 +99,11 @@ export default function Arrests() {
         Case_ID: form.Case_ID ? Number(form.Case_ID) : null,
         Charges: form.Charges,
       };
-      if (editing) await api.put(`/officer/arrests/${editing.Arrest_ID || editing._id}`, payload);
+      if (editing)
+        await api.put(
+          `/officer/arrests/${editing.Arrest_ID || editing._id}`,
+          payload,
+        );
       else await api.post("/officer/arrests", payload);
       setShowModal(false);
       fetchData();
@@ -135,7 +139,9 @@ export default function Arrests() {
               <ShieldAlert className="h-10 w-10 text-red-500" />
               Arrest <span className="text-gradient">Records</span>
             </h1>
-            <p className="text-slate-400 text-sm">Official logs of apprehensions and detentions.</p>
+            <p className="text-slate-400 text-sm">
+              Official logs of apprehensions and detentions.
+            </p>
           </div>
           <button
             onClick={openCreate}
@@ -147,10 +153,10 @@ export default function Arrests() {
 
         <div className="glass-dark rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden">
           {loading ? (
-             <div className="p-12 flex flex-col items-center justify-center text-slate-400">
-                <Loader2 className="h-8 w-8 animate-spin mb-4 text-red-500" />
-                <p>Retrieving arrest histories...</p>
-             </div>
+            <div className="p-12 flex flex-col items-center justify-center text-slate-400">
+              <Loader2 className="h-8 w-8 animate-spin mb-4 text-red-500" />
+              <p>Retrieving arrest histories...</p>
+            </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left whitespace-nowrap">
@@ -163,7 +169,12 @@ export default function Arrests() {
                       "Case Link",
                       "Actions",
                     ].map((h) => (
-                      <th key={h} className={h === "Actions" ? "px-8 py-5 text-right" : "px-8 py-5"}>
+                      <th
+                        key={h}
+                        className={
+                          h === "Actions" ? "px-8 py-5 text-right" : "px-8 py-5"
+                        }
+                      >
                         {h}
                       </th>
                     ))}
@@ -172,21 +183,33 @@ export default function Arrests() {
                 <tbody className="divide-y divide-white/5">
                   {items.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-8 py-12 text-slate-400 text-center">
-                         <div className="flex flex-col items-center justify-center">
+                      <td
+                        colSpan={5}
+                        className="px-8 py-12 text-slate-400 text-center"
+                      >
+                        <div className="flex flex-col items-center justify-center">
                           <ShieldAlert className="h-12 w-12 text-slate-700 mb-3" />
-                          <p className="text-lg font-medium text-slate-300">No records found.</p>
+                          <p className="text-lg font-medium text-slate-300">
+                            No records found.
+                          </p>
                         </div>
                       </td>
                     </tr>
                   ) : (
                     items.map((a) => (
-                      <tr key={a._id} className="hover:bg-white/[0.02] transition duration-200 group">
+                      <tr
+                        key={a._id}
+                        className="hover:bg-white/[0.02] transition duration-200 group"
+                      >
                         <td className="px-8 py-5 text-slate-200 font-semibold">
-                          {criminals.find((c) => c.Criminal_ID === a.Criminal_ID)?.Criminal_Name || "—"}
+                          {criminals.find(
+                            (c) => c.Criminal_ID === a.Criminal_ID,
+                          )?.Criminal_Name || "—"}
                         </td>
                         <td className="px-8 py-5 text-slate-400 font-mono text-sm">
-                          {a.Arrest_Date ? new Date(a.Arrest_Date).toLocaleDateString() : "—"}
+                          {a.Arrest_Date
+                            ? new Date(a.Arrest_Date).toLocaleDateString()
+                            : "—"}
                         </td>
                         <td className="px-8 py-5 text-slate-400 max-w-xs truncate">
                           {a.Charges || "—"}
@@ -269,7 +292,8 @@ export default function Arrests() {
                     <option value="">Select case</option>
                     {cases.map((c) => (
                       <option key={c.Case_ID} value={String(c.Case_ID)}>
-                        {(c.Case_ID ? String(c.Case_ID).slice(-6) : "—")} — {c.Case_Status}
+                        {c.Case_ID ? String(c.Case_ID).slice(-6) : "—"} —{" "}
+                        {c.Case_Status}
                       </option>
                     ))}
                   </select>
@@ -296,7 +320,7 @@ export default function Arrests() {
                 />
               </Field>
               {error && (
-                 <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium">
+                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium">
                   {error}
                 </div>
               )}
@@ -307,7 +331,9 @@ export default function Arrests() {
                   className="w-full bg-white hover:bg-slate-200 text-slate-950 disabled:opacity-50 disabled:cursor-not-allowed font-bold rounded-xl py-3.5 transition-all shadow-lg active:scale-95 flex justify-center items-center gap-2"
                 >
                   {saving ? (
-                    <><Loader2 className="h-5 w-5 animate-spin" /> Processing...</>
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" /> Processing...
+                    </>
                   ) : (
                     "Authorize Record"
                   )}
@@ -321,7 +347,13 @@ export default function Arrests() {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-1.5">
       <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">
@@ -332,15 +364,25 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
+function Modal({
+  title,
+  onClose,
+  children,
+}: {
+  title: string;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 px-4 animate-fade-in">
-      <div 
+      <div
         className="glass-dark border border-white/10 rounded-2xl w-full max-w-md p-8 max-h-[90vh] overflow-y-auto shadow-2xl"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-2xl font-extrabold text-white tracking-tight">{title}</h3>
+          <h3 className="text-2xl font-extrabold text-white tracking-tight">
+            {title}
+          </h3>
           <button
             onClick={onClose}
             className="p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors"

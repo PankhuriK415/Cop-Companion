@@ -81,7 +81,7 @@ export default function FIRs() {
   useEffect(() => {
     fetchData();
   }, [page]);
-  
+
   useEffect(() => {
     fetchVictims();
     api
@@ -173,11 +173,13 @@ export default function FIRs() {
       <div className="relative z-10 max-w-7xl mx-auto animate-fade-in">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
           <div>
-             <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight font-['Outfit'] mb-2 flex items-center gap-3">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight font-['Outfit'] mb-2 flex items-center gap-3">
               <FileText className="h-10 w-10 text-emerald-500" />
               FIR <span className="text-gradient">Records</span>
             </h1>
-            <p className="text-slate-400 text-sm">First Information Reports registry.</p>
+            <p className="text-slate-400 text-sm">
+              First Information Reports registry.
+            </p>
           </div>
           <button
             onClick={() => {
@@ -190,42 +192,60 @@ export default function FIRs() {
             <Plus className="h-5 w-5" /> File FIR
           </button>
         </div>
-        
+
         <div className="mb-8 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm inline-block">
-          <span className="font-bold">Attention:</span> FIR records are immutable and cannot be edited once firmly filed in the system.
+          <span className="font-bold">Attention:</span> FIR records are
+          immutable and cannot be edited once firmly filed in the system.
         </div>
 
         <div className="glass-dark rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden">
           {loading ? (
-             <div className="p-12 flex flex-col items-center justify-center text-slate-400">
-                <Loader2 className="h-8 w-8 animate-spin mb-4 text-emerald-500" />
-                <p>Retrieving legal documents...</p>
-             </div>
+            <div className="p-12 flex flex-col items-center justify-center text-slate-400">
+              <Loader2 className="h-8 w-8 animate-spin mb-4 text-emerald-500" />
+              <p>Retrieving legal documents...</p>
+            </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left whitespace-nowrap">
                 <thead className="bg-black/20 text-xs uppercase tracking-wider text-slate-400 font-semibold border-b border-white/5">
                   <tr>
-                    {["Filing Date", "Victim", "Case Status", "Actions"].map((h) => (
-                      <th key={h} className={h === "Actions" ? "px-8 py-5 text-right" : "px-8 py-5"}>
-                        {h}
-                      </th>
-                    ))}
+                    {["Filing Date", "Victim", "Case Status", "Actions"].map(
+                      (h) => (
+                        <th
+                          key={h}
+                          className={
+                            h === "Actions"
+                              ? "px-8 py-5 text-right"
+                              : "px-8 py-5"
+                          }
+                        >
+                          {h}
+                        </th>
+                      ),
+                    )}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
                   {items.length === 0 ? (
                     <tr>
-                      <td colSpan={4} className="px-8 py-12 text-slate-400 text-center">
-                         <div className="flex flex-col items-center justify-center">
+                      <td
+                        colSpan={4}
+                        className="px-8 py-12 text-slate-400 text-center"
+                      >
+                        <div className="flex flex-col items-center justify-center">
                           <FileText className="h-12 w-12 text-slate-700 mb-3" />
-                          <p className="text-lg font-medium text-slate-300">No FIRs filed.</p>
+                          <p className="text-lg font-medium text-slate-300">
+                            No FIRs filed.
+                          </p>
                         </div>
                       </td>
                     </tr>
                   ) : (
                     items.map((f) => (
-                      <tr key={f._id} className="hover:bg-white/[0.02] transition duration-200 group">
+                      <tr
+                        key={f._id}
+                        className="hover:bg-white/[0.02] transition duration-200 group"
+                      >
                         <td className="px-8 py-5 text-slate-300 font-mono text-sm">
                           {new Date(f.FIR_Date).toLocaleDateString()}
                         </td>
@@ -272,12 +292,14 @@ export default function FIRs() {
         {/* Create FIR Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 px-4 animate-fade-in">
-            <div 
+            <div
               className="glass-dark border border-white/10 rounded-2xl w-full max-w-md p-8 shadow-2xl"
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-extrabold text-white tracking-tight">Draft New FIR</h3>
+                <h3 className="text-2xl font-extrabold text-white tracking-tight">
+                  Draft New FIR
+                </h3>
                 <button
                   onClick={() => setShowModal(false)}
                   className="p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
@@ -345,17 +367,18 @@ export default function FIRs() {
                     <option value="">Select linked case</option>
                     {cases.map((c) => (
                       <option key={c.Case_ID} value={String(c.Case_ID)}>
-                         {(c.Case_ID ? String(c.Case_ID).slice(-6) : "—")} — {c.Case_Status}
+                        {c.Case_ID ? String(c.Case_ID).slice(-6) : "—"} —{" "}
+                        {c.Case_Status}
                       </option>
                     ))}
                   </select>
                 </div>
                 {error && (
-                   <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium">
+                  <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium">
                     {error}
                   </div>
                 )}
-                
+
                 <div className="pt-4">
                   <button
                     onClick={handleCreate}
@@ -363,7 +386,10 @@ export default function FIRs() {
                     className="w-full bg-white hover:bg-slate-200 text-slate-950 disabled:opacity-50 disabled:cursor-not-allowed font-bold rounded-xl py-3.5 transition-all shadow-lg active:scale-95 flex justify-center items-center gap-2"
                   >
                     {saving ? (
-                      <><Loader2 className="h-5 w-5 animate-spin" /> Submitting...</>
+                      <>
+                        <Loader2 className="h-5 w-5 animate-spin" />{" "}
+                        Submitting...
+                      </>
                     ) : (
                       "Officially File FIR"
                     )}
@@ -379,7 +405,9 @@ export default function FIRs() {
           <div className="fixed inset-0 bg-slate-950/90 flex items-center justify-center z-[60] px-4 animate-fade-in">
             <div className="glass-dark border border-white/10 rounded-2xl w-full max-w-lg p-8 shadow-2xl">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-extrabold text-white tracking-tight">Register Victim</h3>
+                <h3 className="text-2xl font-extrabold text-white tracking-tight">
+                  Register Victim
+                </h3>
                 <button
                   onClick={() => setShowVictimModal(false)}
                   className="p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
@@ -458,7 +486,7 @@ export default function FIRs() {
                 </div>
 
                 {victimError && (
-                   <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium">
+                  <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium">
                     {victimError}
                   </div>
                 )}

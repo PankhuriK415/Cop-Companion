@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import api from "../lib/apiClient";
-import { Search, Plus, Filter, Edit2, Trash2, X, FolderOpen, Loader2 } from "lucide-react";
+import {
+  Search,
+  Plus,
+  Filter,
+  Edit2,
+  Trash2,
+  X,
+  FolderOpen,
+  Loader2,
+} from "lucide-react";
 
 interface CaseItem {
   Case_ID?: number;
@@ -30,10 +39,14 @@ const STATUS_OPTIONS = [
 ];
 
 const statusColor = (s: string) => {
-  if (s === "Open") return "bg-blue-500/10 text-blue-400 border border-blue-500/20";
-  if (s === "Closed") return "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
-  if (s === "Pending Review") return "bg-purple-500/10 text-purple-400 border border-purple-500/20";
-  if (s === "Dismissed") return "bg-red-500/10 text-red-400 border border-red-500/20";
+  if (s === "Open")
+    return "bg-blue-500/10 text-blue-400 border border-blue-500/20";
+  if (s === "Closed")
+    return "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+  if (s === "Pending Review")
+    return "bg-purple-500/10 text-purple-400 border border-purple-500/20";
+  if (s === "Dismissed")
+    return "bg-red-500/10 text-red-400 border border-red-500/20";
   return "bg-amber-500/10 text-amber-400 border border-amber-500/20";
 };
 
@@ -106,8 +119,18 @@ export default function Cases() {
       Case_Date: c.Case_Date ? c.Case_Date.slice(0, 10) : "",
       Case_Status: c.Case_Status,
       Description: c.Description || "",
-      Station_ID: typeof c.Station_ID === 'number' ? String(c.Station_ID) : (c.Station_ID && (c.Station_ID as any).Station_ID ? String((c.Station_ID as any).Station_ID) : ""),
-      Officer_ID: typeof c.Officer_ID === 'number' ? String(c.Officer_ID) : (c.Officer_ID && (c.Officer_ID as any).Officer_ID ? String((c.Officer_ID as any).Officer_ID) : ""),
+      Station_ID:
+        typeof c.Station_ID === "number"
+          ? String(c.Station_ID)
+          : c.Station_ID && (c.Station_ID as any).Station_ID
+            ? String((c.Station_ID as any).Station_ID)
+            : "",
+      Officer_ID:
+        typeof c.Officer_ID === "number"
+          ? String(c.Officer_ID)
+          : c.Officer_ID && (c.Officer_ID as any).Officer_ID
+            ? String((c.Officer_ID as any).Officer_ID)
+            : "",
     });
     setError("");
     setShowModal(true);
@@ -125,7 +148,10 @@ export default function Cases() {
         Officer_ID: form.Officer_ID ? Number(form.Officer_ID) : null,
       };
       if (editing) {
-        await api.put(`/officer/cases/${editing.Case_ID || editing._id}`, payload);
+        await api.put(
+          `/officer/cases/${editing.Case_ID || editing._id}`,
+          payload,
+        );
       } else {
         await api.post("/officer/cases", payload);
       }
@@ -141,7 +167,12 @@ export default function Cases() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Confirm deletion of this case record? This action cannot be undone.")) return;
+    if (
+      !confirm(
+        "Confirm deletion of this case record? This action cannot be undone.",
+      )
+    )
+      return;
     try {
       await api.delete(`/officer/cases/${id}`);
       fetchCases();
@@ -163,7 +194,9 @@ export default function Cases() {
               <FolderOpen className="h-10 w-10 text-blue-500" />
               Case <span className="text-gradient">Records</span>
             </h1>
-            <p className="text-slate-400 text-sm">Manage and track law enforcement case files.</p>
+            <p className="text-slate-400 text-sm">
+              Manage and track law enforcement case files.
+            </p>
           </div>
           <button
             onClick={openCreate}
@@ -199,7 +232,9 @@ export default function Cases() {
             >
               <option value="">All Statuses</option>
               {STATUS_OPTIONS.map((s) => (
-                <option key={s} value={s}>{s}</option>
+                <option key={s} value={s}>
+                  {s}
+                </option>
               ))}
             </select>
           </div>
@@ -209,7 +244,7 @@ export default function Cases() {
           {loading ? (
             <div className="p-12 flex flex-col items-center justify-center text-slate-400">
               <Loader2 className="h-8 w-8 animate-spin mb-4 text-blue-500" />
-               <p>Securely fetching records...</p>
+              <p>Securely fetching records...</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -227,37 +262,57 @@ export default function Cases() {
                 <tbody className="divide-y divide-white/5">
                   {cases.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="px-8 py-12 text-slate-400 text-center">
+                      <td
+                        colSpan={6}
+                        className="px-8 py-12 text-slate-400 text-center"
+                      >
                         <div className="flex flex-col items-center justify-center">
                           <FolderOpen className="h-12 w-12 text-slate-700 mb-3" />
-                          <p className="text-lg font-medium text-slate-300">No cases match criteria.</p>
-                          <p className="text-sm">Try adjusting your filters or create a new case.</p>
+                          <p className="text-lg font-medium text-slate-300">
+                            No cases match criteria.
+                          </p>
+                          <p className="text-sm">
+                            Try adjusting your filters or create a new case.
+                          </p>
                         </div>
                       </td>
                     </tr>
                   ) : (
                     cases.map((c) => (
-                      <tr key={c._id} className="hover:bg-white/[0.02] transition duration-200 group">
+                      <tr
+                        key={c._id}
+                        className="hover:bg-white/[0.02] transition duration-200 group"
+                      >
                         <td className="px-8 py-5 text-slate-200 max-w-xs xl:max-w-md">
-                           <div className="truncate font-medium">{c.Description || "—"}</div>
+                          <div className="truncate font-medium">
+                            {c.Description || "—"}
+                          </div>
                         </td>
                         <td className="px-8 py-5">
-                          <span className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide shadow-sm border ${statusColor(c.Case_Status)}`}>
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide shadow-sm border ${statusColor(c.Case_Status)}`}
+                          >
                             {c.Case_Status}
                           </span>
                         </td>
                         <td className="px-8 py-5 text-slate-300">
-                          {typeof c.Officer_ID === 'number'
-                            ? officers.find((o) => o.Officer_ID === c.Officer_ID)?.Officer_Name || "—"
+                          {typeof c.Officer_ID === "number"
+                            ? officers.find(
+                                (o) => o.Officer_ID === c.Officer_ID,
+                              )?.Officer_Name || "—"
                             : (c.Officer_ID as any)?.Officer_Name || "—"}
                         </td>
                         <td className="px-8 py-5 text-slate-300 font-medium">
-                          {typeof c.Station_ID === 'number'
-                            ? stations.find((s) => s.Station_ID === c.Station_ID)?.Station_Name || "—"
+                          {typeof c.Station_ID === "number"
+                            ? stations.find(
+                                (s) => s.Station_ID === c.Station_ID,
+                              )?.Station_Name || "—"
                             : (c.Station_ID as any)?.Station_Name || "—"}
                         </td>
                         <td className="px-8 py-5 text-slate-400 font-mono text-sm">
-                          {c.Case_Date ? new Date(c.Case_Date).toLocaleDateString() : "—"}
+                          {c.Case_Date
+                            ? new Date(c.Case_Date).toLocaleDateString()
+                            : "—"}
                         </td>
                         <td className="px-8 py-5 text-right space-x-3 opacity-100 sm:opacity-50 group-hover:opacity-100 transition-opacity">
                           <button
@@ -310,25 +365,33 @@ export default function Cases() {
                 <input
                   type="date"
                   value={form.Case_Date}
-                  onChange={(e) => setForm((f) => ({ ...f, Case_Date: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, Case_Date: e.target.value }))
+                  }
                   className={inputCls}
                 />
               </Field>
               <Field label="Current Status">
                 <select
                   value={form.Case_Status}
-                  onChange={(e) => setForm((f) => ({ ...f, Case_Status: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, Case_Status: e.target.value }))
+                  }
                   className={inputCls}
                 >
                   {STATUS_OPTIONS.map((s) => (
-                    <option key={s} value={s}>{s}</option>
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
                   ))}
                 </select>
               </Field>
               <Field label="Case Description">
                 <textarea
                   value={form.Description}
-                  onChange={(e) => setForm((f) => ({ ...f, Description: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, Description: e.target.value }))
+                  }
                   className={`${inputCls} resize-none h-28 leading-relaxed`}
                   placeholder="Enter detailed summary..."
                 />
@@ -337,35 +400,43 @@ export default function Cases() {
                 <Field label="Operating Station">
                   <select
                     value={form.Station_ID}
-                    onChange={(e) => setForm((f) => ({ ...f, Station_ID: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, Station_ID: e.target.value }))
+                    }
                     className={inputCls}
                   >
                     <option value="">Select Station</option>
                     {stations.map((s) => (
-                      <option key={s.Station_ID} value={String(s.Station_ID)}>{s.Station_Name}</option>
+                      <option key={s.Station_ID} value={String(s.Station_ID)}>
+                        {s.Station_Name}
+                      </option>
                     ))}
                   </select>
                 </Field>
                 <Field label="Assigned Officer">
                   <select
                     value={form.Officer_ID}
-                    onChange={(e) => setForm((f) => ({ ...f, Officer_ID: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, Officer_ID: e.target.value }))
+                    }
                     className={inputCls}
                   >
                     <option value="">Select Officer</option>
                     {officers.map((o) => (
-                      <option key={o.Officer_ID} value={String(o.Officer_ID)}>{o.Officer_Name}</option>
+                      <option key={o.Officer_ID} value={String(o.Officer_ID)}>
+                        {o.Officer_Name}
+                      </option>
                     ))}
                   </select>
                 </Field>
               </div>
-              
+
               {error && (
-                 <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium">
+                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium">
                   {error}
                 </div>
               )}
-              
+
               <div className="pt-4">
                 <button
                   onClick={handleSave}
@@ -373,7 +444,9 @@ export default function Cases() {
                   className="w-full bg-white hover:bg-slate-200 text-slate-950 disabled:opacity-50 disabled:cursor-not-allowed font-bold rounded-xl py-3.5 transition-all shadow-lg active:scale-95 flex justify-center items-center gap-2"
                 >
                   {saving ? (
-                    <><Loader2 className="h-5 w-5 animate-spin" /> Processing...</>
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" /> Processing...
+                    </>
                   ) : (
                     "Save Case Record"
                   )}
@@ -390,7 +463,13 @@ export default function Cases() {
 const inputCls =
   "w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all shadow-inner";
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-1.5">
       <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">
@@ -401,15 +480,25 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
+function Modal({
+  title,
+  onClose,
+  children,
+}: {
+  title: string;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 px-4 animate-fade-in">
-      <div 
+      <div
         className="glass-dark border border-white/10 rounded-2xl w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto shadow-2xl"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-2xl font-extrabold text-white tracking-tight">{title}</h3>
+          <h3 className="text-2xl font-extrabold text-white tracking-tight">
+            {title}
+          </h3>
           <button
             onClick={onClose}
             className="p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
