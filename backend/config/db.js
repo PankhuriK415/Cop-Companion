@@ -1,17 +1,31 @@
 const { Sequelize } = require("sequelize");
 require("dotenv").config();
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME || "your_database_name",
-  process.env.DB_USER || "root",
-  process.env.DB_PASSWORD || "",
-  {
-    host: process.env.DB_HOST || "localhost",
-    port: process.env.DB_PORT || 3306,
+// Support a full connection URI (Railway provides MYSQL_URL / MYSQL_PUBLIC_URL)
+const connectionUri =
+  process.env.DATABASE_URL ||
+  process.env.MYSQL_URL ||
+  process.env.MYSQL_PUBLIC_URL;
+
+let sequelize;
+if (connectionUri) {
+  sequelize = new Sequelize(connectionUri, {
     dialect: "mysql",
-    logging: false, // Set to console.log to see SQL queries
-  },
-);
+    logging: false,
+  });
+} else {
+  sequelize = new Sequelize(
+    process.env.DB_NAME || process.env.MYSQLDATABASE || "your_database_name",
+    process.env.DB_USER || process.env.MYSQLUSER || "root",
+    process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || "",
+    {
+      host: process.env.DB_HOST || process.env.MYSQLHOST || "localhost",
+      port: process.env.DB_PORT || process.env.MYSQLPORT || 3306,
+      dialect: "mysql",
+      logging: false, // Set to console.log to see SQL queries
+    },
+  );
+}
 
 const connectDB = async () => {
   try {
