@@ -1,38 +1,53 @@
 const { Sequelize } = require("sequelize");
-require("dotenv").config();
+require("./dotenv");
 
-// Support a full connection URI (Railway provides MYSQL_URL / MYSQL_PUBLIC_URL)
-const connectionUri =
-  process.env.DATABASE_URL ||
-  process.env.MYSQL_URL ||
-  process.env.MYSQL_PUBLIC_URL;
+const connectionUri = process.env.DATABASE_URL;
+
+const baseOptions = {
+  dialect: "mysql",
+  logging: false,
+};
+
+// TiDB Cloud requires TLS
+if (connectionUri?.includes("tidbcloud.com")) {
+  baseOptions.dialectOptions = {
+    ssl: {
+      minVersion: "TLSv1.2",
+      rejectUnauthorized: true,
+    },
+  };
+}
 
 let sequelize;
 if (connectionUri) {
-  sequelize = new Sequelize(connectionUri, {
-    dialect: "mysql",
-    logging: false,
-  });
+  sequelize = new Sequelize(connectionUri, baseOptions);
 } else {
   sequelize = new Sequelize(
-    process.env.DB_NAME || process.env.MYSQLDATABASE || "your_database_name",
-    process.env.DB_USER || process.env.MYSQLUSER || "root",
-    process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || "",
+    process.env.DB_NAME || "crime_db",
+    process.env.DB_USER || "root",
+    process.env.DB_PASSWORD || "",
     {
-      host: process.env.DB_HOST || process.env.MYSQLHOST || "localhost",
-      port: process.env.DB_PORT || process.env.MYSQLPORT || 3306,
+      host: process.env.DB_HOST || "localhost",
+      port: process.env.DB_PORT || 3306,
       dialect: "mysql",
-      logging: false, // Set to console.log to see SQL queries
+      logging: false,
     },
   );
 }
 
+const isRemoteDb =
+  connectionUri?.includes("tidbcloud.com") ||
+  process.env.NODE_ENV === "production";
+
 const connectDB = async () => {
   try {
     await sequelize.authenticate();
-    // Ensure models/tables exist in development by syncing.
-    // Uses `alter: true` to avoid destructive drops while keeping schema in sync.
-    await sequelize.sync({ alter: true });
+    // TiDB rejects ALTER on UNIQUE keys; only create missing tables remotely.
+    if (isRemoteDb) {
+      await sequelize.sync();
+    } else {
+      await sequelize.sync({ alter: true });
+    }
     console.log("✅ MySQL connected and models synced with Sequelize");
   } catch (err) {
     console.error("❌ MySQL connection failed:", err.message);
