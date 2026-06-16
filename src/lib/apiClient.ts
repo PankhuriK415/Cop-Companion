@@ -1,7 +1,13 @@
 import axios from "axios";
 
+// Local: "/api" is proxied by Vite to http://localhost:5000 (same-origin, no CORS).
+const LOCAL_API_BASE_URL = "/api";
+const PROD_API_BASE_URL = "https://cop-companion.onrender.com/api";
+
+const useLocal = import.meta.env.VITE_USE_LOCAL === "true";
+
 const apiClient = axios.create({
-  baseURL: "https://cop-companion.onrender.com/api",
+  baseURL: useLocal ? LOCAL_API_BASE_URL : import.meta.env.VITE_API_URL || PROD_API_BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
 
