@@ -30,6 +30,12 @@
     "useDefineForClassFields": true
   },
   "include": [
-    "src"
+    "lib",
+    "pages",
+    "components",
+    "context",
+    "App.tsx",
+    "main.tsx",
+    "vite-env.d.ts"
   ]
 }

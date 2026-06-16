@@ -2,7 +2,8 @@
  * Seed script — run once to populate the MySQL database with sample data.
  * Usage: node seed.js
  */
-require("dotenv").config();
+require("./config/dotenv");
+
 const bcrypt = require("bcryptjs");
 
 const { connectDB } = require("./config/db");
