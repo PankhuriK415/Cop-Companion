@@ -13,6 +13,16 @@ const apiClient = axios.create({
 
 // Attach JWT token to every request.
 apiClient.interceptors.request.use((config) => {
+  // If a caller accidentally uses "auth/login" (missing leading slash),
+  // axios will concatenate it to "/api" => "/apiauth/login" and break the Vite proxy.
+  if (
+    typeof config.url === "string" &&
+    !config.url.startsWith("/") &&
+    !config.url.startsWith("http")
+  ) {
+    config.url = `/${config.url}`;
+  }
+
   const token = localStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
