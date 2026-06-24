@@ -1,12 +1,28 @@
 import axios from "axios";
 
+// Local: "/api" is proxied by Vite to http://localhost:5000 (same-origin, no CORS).
+const LOCAL_API_BASE_URL = "/api";
+const PROD_API_BASE_URL = "https://cop-companion.onrender.com/api";
+
+const useLocal = import.meta.env.VITE_USE_LOCAL === "true";
+
 const apiClient = axios.create({
-  baseURL: "https://cop-companion.onrender.com/api",
+  baseURL: useLocal ? LOCAL_API_BASE_URL : import.meta.env.VITE_API_URL || PROD_API_BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
 
 // Attach JWT token to every request.
 apiClient.interceptors.request.use((config) => {
+  // If a caller accidentally uses "auth/login" (missing leading slash),
+  // axios will concatenate it to "/api" => "/apiauth/login" and break the Vite proxy.
+  if (
+    typeof config.url === "string" &&
+    !config.url.startsWith("/") &&
+    !config.url.startsWith("http")
+  ) {
+    config.url = `/${config.url}`;
+  }
+
   const token = localStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

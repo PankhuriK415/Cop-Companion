@@ -2,14 +2,15 @@ const { Sequelize } = require("sequelize");
 require("./dotenv");
 
 const connectionUri = process.env.DATABASE_URL;
+const shouldUseDatabaseUrl = Boolean(connectionUri) && process.env.NODE_ENV === "production";
 
 const baseOptions = {
   dialect: "mysql",
   logging: false,
 };
 
-// TiDB Cloud requires TLS
-if (connectionUri?.includes("tidbcloud.com")) {
+// TiDB Cloud requires TLS (only relevant when using DATABASE_URL in production)
+if (shouldUseDatabaseUrl && connectionUri?.includes("tidbcloud.com")) {
   baseOptions.dialectOptions = {
     ssl: {
       minVersion: "TLSv1.2",
@@ -19,7 +20,7 @@ if (connectionUri?.includes("tidbcloud.com")) {
 }
 
 let sequelize;
-if (connectionUri) {
+if (shouldUseDatabaseUrl) {
   sequelize = new Sequelize(connectionUri, baseOptions);
 } else {
   sequelize = new Sequelize(
@@ -36,7 +37,7 @@ if (connectionUri) {
 }
 
 const isRemoteDb =
-  connectionUri?.includes("tidbcloud.com") ||
+  (shouldUseDatabaseUrl && connectionUri?.includes("tidbcloud.com")) ||
   process.env.NODE_ENV === "production";
 
 const connectDB = async () => {
