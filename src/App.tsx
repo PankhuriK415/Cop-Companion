@@ -1,3 +1,5 @@
+import { useState, useCallback } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -91,107 +93,134 @@ function NavBar() {
 
 function AppRoutes() {
   const { user, isLoading } = useAuth();
+  const [loadingComplete, setLoadingComplete] = useState(false);
+  const [progress, setProgress] = useState(0);
 
-  if (isLoading) {
-    return (
-      <LoadingScreen
-        title="Verifying account access"
-        subtitle="Checking session security and permissions..."
-      />
-    );
-  }
+  const handleLoadingComplete = useCallback(() => {
+    setLoadingComplete(true);
+  }, []);
 
   return (
-    <div className="w-full min-h-screen flex flex-col bg-gradient-to-br from-slate-900 to-slate-800">
-      <NavBar />
-      <div className="flex-1 overflow-auto">
-        <Routes>
-          <Route
-            path="/"
-            element={user ? <Navigate to="/dashboard" replace /> : <Home />}
-          />
+    <div className="relative w-full min-h-screen bg-slate-950">
+      <AnimatePresence>
+        {(isLoading || !loadingComplete) && (
+          <motion.div
+            key="loading-screen-container"
+            className="absolute inset-0 z-50 w-full min-h-screen flex flex-col"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+          >
+            <LoadingScreen
+              title="Verifying account access"
+              subtitle="Checking session security and permissions..."
+              progress={progress}
+              setProgress={setProgress}
+              onLoadingComplete={handleLoadingComplete}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-          {/* Public route */}
-          <Route
-            path="/login"
-            element={user ? <Navigate to="/dashboard" replace /> : <Login />}
-          />
+      {(!isLoading && loadingComplete) && (
+        <motion.div
+          key="core-app-layout"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="w-full min-h-screen flex flex-col bg-gradient-to-br from-slate-900 to-slate-800"
+        >
+          <NavBar />
+          <div className="flex-1 overflow-auto">
+            <Routes>
+              <Route
+                path="/"
+                element={user ? <Navigate to="/dashboard" replace /> : <Home />}
+              />
 
-          {/* All authenticated routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
+              {/* Public route */}
+              <Route
+                path="/login"
+                element={user ? <Navigate to="/dashboard" replace /> : <Login />}
+              />
 
-          {/* Officer-only routes */}
-          <Route
-            path="/cases"
-            element={
-              <ProtectedRoute roles={["officer"]}>
-                <Cases />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/criminals"
-            element={
-              <ProtectedRoute roles={["officer"]}>
-                <Criminals />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/victims"
-            element={
-              <ProtectedRoute roles={["officer"]}>
-                <Victims />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/evidence"
-            element={
-              <ProtectedRoute roles={["officer"]}>
-                <Evidence />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/arrests"
-            element={
-              <ProtectedRoute roles={["officer"]}>
-                <Arrests />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/firs"
-            element={
-              <ProtectedRoute roles={["officer"]}>
-                <FIRs />
-              </ProtectedRoute>
-            }
-          />
+              {/* All authenticated routes */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
 
-          {/* Catch-all */}
-          <Route
-            path="*"
-            element={<Navigate to={user ? "/dashboard" : "/"} replace />}
-          />
-        </Routes>
-      </div>
+              {/* Officer-only routes */}
+              <Route
+                path="/cases"
+                element={
+                  <ProtectedRoute roles={["officer"]}>
+                    <Cases />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/criminals"
+                element={
+                  <ProtectedRoute roles={["officer"]}>
+                    <Criminals />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/victims"
+                element={
+                  <ProtectedRoute roles={["officer"]}>
+                    <Victims />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/evidence"
+                element={
+                  <ProtectedRoute roles={["officer"]}>
+                    <Evidence />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/arrests"
+                element={
+                  <ProtectedRoute roles={["officer"]}>
+                    <Arrests />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/firs"
+                element={
+                  <ProtectedRoute roles={["officer"]}>
+                    <FIRs />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Catch-all */}
+              <Route
+                path="*"
+                element={<Navigate to={user ? "/dashboard" : "/"} replace />}
+              />
+            </Routes>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Orbitron:wght@700;800;900&family=Syncopate:wght@700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -70,3 +70,60 @@ code {
     transform: translateX(250%);
   }
 }
+
+@layer base {
+  :root {
+    /* Premium Dark Theme Variables (default) */
+    --bg-start: #0B1220;
+    --bg-end: #111827;
+    --accent-custom: #00f0ff; /* Electric Cyber Cyan */
+    --accent-custom-rgb: 0, 240, 255;
+    --accent-custom-glow: rgba(0, 240, 255, 0.15);
+    --accent-custom-glow-strong: rgba(0, 240, 255, 0.35);
+    --accent-custom-glow-extreme: rgba(0, 240, 255, 0.7);
+    --text-primary: #ffffff;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    --track: #1f2937;
+    --divider: rgba(75, 85, 99, 0.3);
+    --divider-active: rgba(0, 240, 255, 0.5);
+    --card-bg-custom: rgba(17, 24, 39, 0.6);
+    --card-border-custom: rgba(75, 85, 99, 0.2);
+    --hex-opacity: 0.05;
+    --vignette-color: rgba(3, 7, 18, 0.85);
+    --particle-color: rgba(0, 240, 255, 0.3);
+  }
+
+  :root.light {
+    /* Premium Light Theme Variables (future-ready) */
+    --bg-start: #f8fafc;
+    --bg-end: #e2e8f0;
+    --accent-custom: #0284c7; /* Professional Sky Blue */
+    --accent-custom-rgb: 2, 132, 199;
+    --accent-custom-glow: rgba(2, 132, 199, 0.08);
+    --accent-custom-glow-strong: rgba(2, 132, 199, 0.25);
+    --accent-custom-glow-extreme: rgba(2, 132, 199, 0.55);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --track: #cbd5e1;
+    --divider: rgba(203, 213, 225, 0.8);
+    --divider-active: rgba(2, 132, 199, 0.6);
+    --card-bg-custom: rgba(255, 255, 255, 0.7);
+    --card-border-custom: rgba(203, 213, 225, 0.6);
+    --hex-opacity: 0.03;
+    --vignette-color: rgba(15, 23, 42, 0.25);
+    --particle-color: rgba(2, 132, 199, 0.25);
+  }
+}
+
+/* Custom styles for the Hexagonal Pattern overlay using SVG background data-uri */
+.bg-hex-grid {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cpath d='M14 0 L28 8 L28 24 L14 32 L0 24 L0 8 Z M0 49 L14 41 L28 49 M14 32 L14 41' fill='none' stroke='currentColor' stroke-width='0.75'/%3E%3C/svg%3E");
+}
+
+/* Vignette effect */
+.bg-vignette {
+  background: radial-gradient(circle at center, transparent 30%, var(--vignette-color) 100%);
+}
+
