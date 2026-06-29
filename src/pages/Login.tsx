@@ -2,7 +2,8 @@ import { useState, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../lib/apiClient";
-import { ArrowLeft, ShieldAlert } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { CopCompanionLogo } from "../components/logo/CopCompanionLogo";
 
 type AuthMode = "login" | "signup";
 type UserRole = "officer" | "victim" | "criminal";
@@ -86,7 +87,7 @@ export default function Login() {
   };
 
   return (
-    <div className="relative flex justify-center items-center min-h-screen bg-slate-950 px-4 py-12 overflow-hidden selection:bg-blue-500/30">
+    <div className="relative flex justify-center items-center min-h-screen bg-slate-950 px-4 py-6 overflow-hidden selection:bg-blue-500/30">
       {/* Dynamic Background matching Home.tsx */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black z-0" />
       <div className="absolute top-[20%] left-[20%] w-[50%] h-[50%] rounded-full bg-blue-600/10 blur-[150px]" />
@@ -105,19 +106,19 @@ export default function Login() {
         style={{ animationDuration: "0.5s" }}
       >
         {/* Floating icon */}
-        <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-blue-500/20 mb-8 transform -rotate-6 hover:rotate-0 transition-transform">
-          <ShieldAlert className="h-8 w-8 text-white" />
+        <div className="mx-auto flex justify-center mb-4">
+          <CopCompanionLogo size={80} animated={true} className="filter drop-shadow-[0_0_10px_rgba(0,240,255,0.4)]" />
         </div>
 
-        <div className="glass-dark border border-white/10 rounded-2xl p-8 md:p-10 shadow-[0_30px_60px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white">Case Companion</h1>
-            <p className="text-slate-400 mt-2">
+        <div className="glass-dark border border-white/10 rounded-2xl p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.55)] backdrop-blur-2xl">
+          <div className="text-center mb-5">
+            <h1 className="text-2xl font-extrabold tracking-wider text-white uppercase" style={{ fontFamily: "'Orbitron', sans-serif" }}>Cop-Companion</h1>
+            <p className="text-slate-400 mt-1.5 text-xs tracking-wide">
               Crime Record Management System
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 mb-6 bg-slate-700/40 p-1 rounded-lg">
+          <div className="grid grid-cols-2 gap-2 mb-4 bg-slate-700/40 p-1 rounded-lg">
             <button
               type="button"
               onClick={() => {
@@ -150,7 +151,7 @@ export default function Login() {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">
                 Username
@@ -160,7 +161,7 @@ export default function Login() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                className="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 transition"
+                className="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-3.5 py-2 focus:outline-none focus:border-blue-500 transition text-sm"
                 placeholder="Enter your username"
               />
             </div>
@@ -174,22 +175,22 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 transition"
+                className="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-3.5 py-2 focus:outline-none focus:border-blue-500 transition text-sm"
                 placeholder="Enter your password"
               />
             </div>
 
             {mode === "signup" && (
               <>
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                <div className="space-y-1">
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">
                     Role
                   </label>
                   <select
                     value={role}
                     onChange={(e) => setRole(e.target.value as UserRole)}
                     required
-                    className="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 transition"
+                    className="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-3.5 py-2 focus:outline-none focus:border-blue-500 transition text-sm"
                   >
                     <option value="officer">Officer</option>
                     <option value="victim">Victim</option>
@@ -197,8 +198,8 @@ export default function Login() {
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                <div className="space-y-1">
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">
                     Admin Key
                   </label>
                   <input
@@ -206,7 +207,7 @@ export default function Login() {
                     value={adminKey}
                     onChange={(e) => setAdminKey(e.target.value)}
                     required
-                    className="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 transition"
+                    className="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-3.5 py-2 focus:outline-none focus:border-blue-500 transition text-sm"
                     placeholder="Enter admin key"
                   />
                 </div>
@@ -229,7 +230,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full group relative overflow-hidden bg-white text-slate-950 font-bold rounded-xl px-4 py-3.5 transition-all hover:bg-slate-200 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-white/5"
+              className="w-full group relative overflow-hidden bg-white text-slate-950 font-bold rounded-xl px-4 py-2.5 transition-all hover:bg-slate-200 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-white/5 text-sm"
             >
               {loading
                 ? mode === "login"
@@ -240,61 +241,7 @@ export default function Login() {
                   : "Sign Up"}
             </button>
 
-            {mode === "login" && (
-              <div className="pt-1">
-                <p className="text-xs font-medium text-slate-300 mb-2">
-                  Quick Dev Login
-                </p>
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    type="button"
-                    disabled={loading}
-                    onClick={() => handleDevLogin("officer")}
-                    className="bg-slate-700 hover:bg-slate-600 disabled:bg-slate-700/60 disabled:cursor-not-allowed text-slate-100 rounded-lg px-3 py-2 text-xs font-medium transition"
-                  >
-                    Officer
-                  </button>
-                  <button
-                    type="button"
-                    disabled={loading}
-                    onClick={() => handleDevLogin("victim")}
-                    className="bg-slate-700 hover:bg-slate-600 disabled:bg-slate-700/60 disabled:cursor-not-allowed text-slate-100 rounded-lg px-3 py-2 text-xs font-medium transition"
-                  >
-                    Victim
-                  </button>
-                  <button
-                    type="button"
-                    disabled={loading}
-                    onClick={() => handleDevLogin("criminal")}
-                    className="bg-slate-700 hover:bg-slate-600 disabled:bg-slate-700/60 disabled:cursor-not-allowed text-slate-100 rounded-lg px-3 py-2 text-xs font-medium transition"
-                  >
-                    Criminal
-                  </button>
-                </div>
-              </div>
-            )}
           </form>
-
-          <div className="mt-6 p-4 bg-slate-700/50 rounded-lg text-xs text-slate-400">
-            <p className="font-medium text-slate-300 mb-1">Demo Accounts:</p>
-            <p>
-              Officer: <span className="text-slate-200">officer_sharma</span> /
-              Password@123
-            </p>
-            <p>
-              Victim: <span className="text-slate-200">victim_amit</span> /
-              Password@123
-            </p>
-            <p>
-              Criminal: <span className="text-slate-200">criminal_rajan</span> /
-              Password@123
-            </p>
-            <p className="mt-2">
-              Signup requires admin key:{" "}
-              <span className="text-slate-200">123456</span>
-            </p>
-            <p className="mt-1">No role record ID needed anymore.</p>
-          </div>
         </div>
       </div>
     </div>

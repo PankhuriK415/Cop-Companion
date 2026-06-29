@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import LoadingScreen from "./LoadingScreen";
+import LoadingScreen from "./loader/LoadingScreen";
 
 interface Props {
   children: React.ReactNode;

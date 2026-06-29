@@ -2,7 +2,6 @@ import React from "react";
 import { motion } from "framer-motion";
 
 interface ProgressBarProps {
-  /** Loading progress value between 0 and 100 */
   progress: number;
 }
 
@@ -12,7 +11,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
   return (
     <div className="w-full max-w-xl px-6 md:px-0 flex items-center gap-4">
       {/* Progress Track */}
-      <div 
+      <div
         className="flex-grow h-[2px] rounded-full overflow-hidden"
         style={{ backgroundColor: "var(--track)" }}
         role="progressbar"
@@ -23,19 +22,32 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
       >
         {/* Progress Fill */}
         <motion.div
-          className="h-full rounded-full"
-          style={{ 
+          className="h-full rounded-full relative overflow-hidden"
+          style={{
             backgroundColor: "var(--accent-custom)",
-            boxShadow: "0 0 8px var(--accent-custom)",
+            boxShadow: "0 0 6px var(--accent-custom)",
           }}
+          initial={{ width: "0%" }}
           animate={{ width: `${cleanProgress}%` }}
           transition={{ ease: "easeInOut", duration: 0.4 }}
-        />
+        >
+          {/* Shimmer loading line overlay */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+            initial={{ x: "-100%" }}
+            animate={{ x: "100%" }}
+            transition={{
+              repeat: Infinity,
+              duration: 1.6,
+              ease: "linear",
+            }}
+          />
+        </motion.div>
       </div>
 
       {/* Percentage Indicator */}
-      <span 
-        className="text-sm font-semibold font-mono w-12 text-right transition-colors duration-500"
+      <span
+        className="text-xs md:text-sm font-semibold font-mono w-10 text-right select-none transition-colors duration-500"
         style={{ color: "var(--accent-custom)" }}
       >
         {Math.round(cleanProgress)}%
@@ -43,3 +55,4 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
     </div>
   );
 };
+export default ProgressBar;

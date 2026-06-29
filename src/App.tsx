@@ -11,7 +11,8 @@ import {
 } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
-import LoadingScreen from "./components/LoadingScreen";
+import LoadingScreen from "./components/loader/LoadingScreen";
+import { CopCompanionLogo } from "./components/logo/CopCompanionLogo";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -38,10 +39,8 @@ function NavBar() {
           to="/dashboard"
           className="flex items-center gap-2 text-xl font-bold tracking-tight text-white hover:opacity-80 transition-opacity"
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-lg shadow-blue-500/20">
-            <span className="text-sm font-black">C</span>
-          </div>
-          Case<span className="font-light text-slate-300">Companion</span>
+          <CopCompanionLogo size={32} animated={false} glow={true} className="mr-0.5" />
+          Cop-<span className="font-light text-slate-300">Companion</span>
         </Link>
         
         <div className="flex gap-1 text-sm items-center bg-slate-900/50 p-1 rounded-full border border-white/5">
