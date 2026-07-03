@@ -10,51 +10,29 @@ const Officer = require('../models/Officer');
 
 const getAllData = async (req, res, next) => {
   try {
-    const cases = await Case.findAll({ order: [['Case_Date', 'DESC']] });
-    const caseIds = cases.map((c) => c.Case_ID).filter(Boolean);
-    const stationIds = cases.map((c) => c.Station_ID).filter(Boolean);
-    const officerIds = cases.map((c) => c.Officer_ID).filter(Boolean);
-
-    const [firs, arrests, evidences, stations, officers] = await Promise.all([
-      caseIds.length > 0 ? FIR.findAll({ where: { Case_ID: caseIds } }) : [],
-      caseIds.length > 0 ? Arrest.findAll({ where: { Case_ID: caseIds } }) : [],
-      caseIds.length > 0 ? Evidence.findAll({ where: { Case_ID: caseIds } }) : [],
-      stationIds.length > 0 ? PoliceStation.findAll({ where: { Station_ID: stationIds } }) : [],
-      officerIds.length > 0 ? Officer.findAll({ where: { Officer_ID: officerIds } }) : [],
-    ]);
-
-    const stationMap = stations.reduce((acc, item) => {
-      acc[item.Station_ID] = item;
-      return acc;
-    }, {});
-    const officerMap = officers.reduce((acc, item) => {
-      acc[item.Officer_ID] = item;
-      return acc;
-    }, {});
+    const cases = await Case.findAll({
+      order: [['Case_Date', 'DESC']],
+      include: [
+        { model: PoliceStation, attributes: ['Station_Name', 'Location'] },
+        { model: Officer, attributes: ['Officer_Name', 'Officer_Rank'] },
+        { model: FIR, attributes: ['FIR_No', 'FIR_Date'] },
+        { model: Arrest, attributes: ['Arrest_ID', 'Arrest_Date', 'Criminal_ID'] },
+        { model: Evidence, attributes: ['Evidence_ID', 'Evidence_Type', 'Description'] }
+      ]
+    });
 
     const data = cases.map((c) => ({
       Case_ID: c.Case_ID,
       Case_Date: c.Case_Date,
       Case_Status: c.Case_Status,
       Case_Description: c.Description,
-      Station_Name: stationMap[c.Station_ID]?.Station_Name,
-      Station_Location: stationMap[c.Station_ID]?.Location,
-      Officer_Name: officerMap[c.Officer_ID]?.Officer_Name,
-      Officer_Rank: officerMap[c.Officer_ID]?.Officer_Rank,
-      firs: firs.filter((f) => f.Case_ID === c.Case_ID).map((f) => ({
-        FIR_ID: f.FIR_No,
-        FIR_Date: f.FIR_Date,
-      })),
-      arrests: arrests.filter((a) => a.Case_ID === c.Case_ID).map((a) => ({
-        Arrest_ID: a.Arrest_ID,
-        Arrest_Date: a.Arrest_Date,
-        Criminal_ID: a.Criminal_ID,
-      })),
-      evidence: evidences.filter((e) => e.Case_ID === c.Case_ID).map((e) => ({
-        Evidence_ID: e.Evidence_ID,
-        Evidence_Type: e.Evidence_Type,
-        Evidence_Description: e.Description,
-      })),
+      Station_Name: c.PoliceStation?.Station_Name,
+      Station_Location: c.PoliceStation?.Location,
+      Officer_Name: c.Officer?.Officer_Name,
+      Officer_Rank: c.Officer?.Officer_Rank,
+      firs: c.FIRs ? c.FIRs.map((f) => ({ FIR_ID: f.FIR_No, FIR_Date: f.FIR_Date })) : [],
+      arrests: c.Arrests ? c.Arrests.map((a) => ({ Arrest_ID: a.Arrest_ID, Arrest_Date: a.Arrest_Date, Criminal_ID: a.Criminal_ID })) : [],
+      evidence: c.Evidences ? c.Evidences.map((e) => ({ Evidence_ID: e.Evidence_ID, Evidence_Type: e.Evidence_Type, Evidence_Description: e.Description })) : [],
     }));
 
     res.status(200).json({ success: true, count: data.length, data });

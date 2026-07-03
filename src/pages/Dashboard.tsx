@@ -11,7 +11,7 @@ interface Stats {
 }
 
 interface RecentCase {
-  _id: string;
+  Case_ID: number;
   Case_Date: string;
   Case_Status: string;
   Description: string;
@@ -209,7 +209,7 @@ export default function Dashboard() {
                     <tbody className="divide-y divide-white/5">
                       {recent.map((c) => (
                         <tr
-                          key={c._id}
+                          key={c.Case_ID}
                           className="hover:bg-white/[0.02] transition duration-200 group cursor-default"
                         >
                           <td className="px-8 py-5 text-slate-200 font-medium whitespace-normal max-w-sm leading-relaxed group-hover:text-blue-100 transition-colors">

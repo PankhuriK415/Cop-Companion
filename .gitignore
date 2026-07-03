@@ -1,3 +1,11 @@
-/backend/.env
+# Env files
 .env
-E:\Projects\Cop-Companion\backend\.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Node
+node_modules/
+dist/

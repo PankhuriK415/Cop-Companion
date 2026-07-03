@@ -49,19 +49,7 @@ const login = async (req, res, next) => {
     }
 
     const storedPassword = user.Password;
-    const isBcryptHash =
-      typeof storedPassword === "string" && /^\$2[aby]\$/.test(storedPassword);
-    let isMatch = false;
-
-    if (isBcryptHash) {
-      isMatch = await bcrypt.compare(password, storedPassword);
-    } else {
-      isMatch = password === storedPassword;
-      if (isMatch) {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        await user.update({ Password: hashedPassword, Last_Login: new Date() });
-      }
-    }
+    const isMatch = await bcrypt.compare(password, storedPassword);
 
     if (!isMatch) {
       return res
