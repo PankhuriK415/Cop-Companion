@@ -59,7 +59,26 @@ CREATE DATABASE cop_companion;
    npm run dev
    ```
 
+## Architecture
+
+The backend of Cop Companion is built using a **Modular Monolith** architecture with a layered design. This ensures a clean separation of concerns, high maintainability, and makes business logic easy to test.
+
+### Domain Modules
+The `backend/src/modules` directory is organized into distinct domain boundaries (e.g., `case`, `officer`, `criminal`, `victim`, `auth`). Each module contains exactly one entity and encapsulates its own:
+- **Routes (`*.routes.js`)**: Defines API endpoints and applies middleware.
+- **Controller (`*.controller.js`)**: A thin layer that parses HTTP requests, delegates work to the service layer, and formats HTTP responses.
+- **Service (`*.service.js`)**: The core business logic layer. Purely handles data manipulation and cross-module interactions without knowing about HTTP `req`/`res` objects.
+- **Model (`*.model.js`)**: Sequelize ORM definitions mapping to database tables.
+- **Schema (`*.schema.js`)**: Zod validation schemas to ensure runtime type safety for incoming requests.
+
+### Shared Infrastructure
+Cross-cutting concerns are housed in `backend/src/shared`:
+- **Database**: Global database connections and Sequelize model associations (`associations.js`).
+- **Middleware**: Reusable middleware for authentication, error handling, and request validation.
+- **Utils**: Shared helpers like token generation and password hashing.
+
 ## Key Features
 - **Secure Architecture**: API validation using Zod.
-- **Role-based Access Control**: Officer and Admin isolated routes.
+- **Modular Monolith**: Domain-driven design with an explicit service layer.
+- **Role-based Access Control**: Isolated routes for Officer, Chief, Admin, Victim, and Criminal. The `Chief` (Senior Officer) role has elevated privileges to oversee and assign cases to officers.
 - **Performant UI**: Fast, debounced data fetching using Tanstack React Query.

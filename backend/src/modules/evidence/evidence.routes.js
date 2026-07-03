@@ -1,0 +1,11 @@
+const express = require('express');
+const router = express.Router();
+const ctrl = require('./evidence.controller');
+const validate = require('../../shared/middleware/validate.middleware');
+const { evidenceSchema } = require('./evidence.schema');
+router.get('/', ctrl.getEvidence);
+router.get('/:id', ctrl.getEvidenceById);
+router.post('/', validate(evidenceSchema), ctrl.createEvidence);
+router.put('/:id', validate(evidenceSchema), ctrl.updateEvidence);
+router.delete('/:id', ctrl.deleteEvidence);
+module.exports = router;

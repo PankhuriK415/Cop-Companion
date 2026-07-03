@@ -1,0 +1,11 @@
+const express = require('express');
+const router = express.Router();
+const ctrl = require('./station.controller');
+const validate = require('../../shared/middleware/validate.middleware');
+const { stationSchema } = require('./station.schema');
+router.get('/', ctrl.getStations);
+router.get('/:id', ctrl.getStationById);
+router.post('/', validate(stationSchema), ctrl.createStation);
+router.put('/:id', validate(stationSchema), ctrl.updateStation);
+router.delete('/:id', ctrl.deleteStation);
+module.exports = router;
