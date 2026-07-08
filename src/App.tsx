@@ -18,26 +18,6 @@ import LoadingScreen from "./components/loader/LoadingScreen";
 import { CopCompanionLogo } from "./components/logo/CopCompanionLogo";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import { useState, useCallback } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import "./App.css";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  Navigate,
-  useLocation,
-} from "react-router-dom";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Toaster } from 'sonner';
-import { ErrorBoundary } from './components/ui/ErrorBoundary';
-import ProtectedRoute from "./components/ProtectedRoute";
-import LoadingScreen from "./components/loader/LoadingScreen";
-import { CopCompanionLogo } from "./components/logo/CopCompanionLogo";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Cases from "./pages/Cases";
 import Criminals from "./pages/Criminals";
@@ -46,6 +26,11 @@ import Evidence from "./pages/Evidence";
 import Arrests from "./pages/Arrests";
 import FIRs from "./pages/FIRs";
 import Profile from "./pages/Profile";
+
+const queryClient = new QueryClient();
+
+function NavBar() {
+  const { user, logout } = useAuth();
 
   const location = useLocation();
   

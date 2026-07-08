@@ -2,27 +2,31 @@ const { Sequelize } = require("sequelize");
 require("../../../config/dotenv");
 
 const connectionUri = process.env.DATABASE_URL;
-const shouldUseDatabaseUrl = Boolean(connectionUri) && process.env.NODE_ENV === "production";
+const isTiDB =
+  (connectionUri && connectionUri.includes("tidbcloud.com")) ||
+  (process.env.DB_HOST && process.env.DB_HOST.includes("tidbcloud.com"));
 
-const baseOptions = {
-  dialect: "mysql",
-  logging: false,
+// Use DATABASE_URL when set, regardless of NODE_ENV
+const shouldUseDatabaseUrl = Boolean(connectionUri);
+
+const tlsOptions = {
+  ssl: {
+    minVersion: "TLSv1.2",
+    rejectUnauthorized: true,
+  },
 };
-
-// TiDB Cloud requires TLS (only relevant when using DATABASE_URL in production)
-if (shouldUseDatabaseUrl && connectionUri?.includes("tidbcloud.com")) {
-  baseOptions.dialectOptions = {
-    ssl: {
-      minVersion: "TLSv1.2",
-      rejectUnauthorized: true,
-    },
-  };
-}
 
 let sequelize;
 if (shouldUseDatabaseUrl) {
-  sequelize = new Sequelize(connectionUri, baseOptions);
+  // TiDB Cloud always requires TLS
+  const urlOptions = {
+    dialect: "mysql",
+    logging: false,
+    ...(isTiDB && { dialectOptions: tlsOptions }),
+  };
+  sequelize = new Sequelize(connectionUri, urlOptions);
 } else {
+  // Individual connection params — still apply TLS if pointing at TiDB
   sequelize = new Sequelize(
     process.env.DB_NAME || "crime_db",
     process.env.DB_USER || "root",
@@ -32,13 +36,13 @@ if (shouldUseDatabaseUrl) {
       port: process.env.DB_PORT || 3306,
       dialect: "mysql",
       logging: false,
+      ...(isTiDB && { dialectOptions: tlsOptions }),
     },
   );
 }
 
 const isRemoteDb =
-  (shouldUseDatabaseUrl && connectionUri?.includes("tidbcloud.com")) ||
-  process.env.NODE_ENV === "production";
+  isTiDB || process.env.NODE_ENV === "production";
 
 const connectDB = async () => {
   try {
