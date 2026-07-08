@@ -3,6 +3,7 @@ import api from "../lib/apiClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PageHeader } from "../components/ui/PageHeader";
+import { PageShell } from "../components/ui/PageShell";
 import { DataTable } from "../components/ui/DataTable";
 import { CrudModal } from "../components/ui/CrudModal";
 
@@ -92,12 +93,12 @@ export default function Victims() {
     { 
       header: "Name", 
       accessorKey: "Victim_Name" as keyof Victim,
-      cell: (item: Victim) => <span className="font-semibold">{item.Victim_Name}</span>
+      cell: (item: Victim) => <span className="font-semibold text-white">{item.Victim_Name}</span>
     },
     { 
       header: "Gender", 
       cell: (item: Victim) => item.Gender ? (
-        <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-800 border border-slate-700">
+        <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-800/80 border border-slate-700">
           {item.Gender}
         </span>
       ) : "—"
@@ -108,14 +109,15 @@ export default function Victims() {
     },
     { 
       header: "Address", 
-      cell: (item: Victim) => <div className="max-w-xs truncate text-slate-400">{item.Address || "—"}</div>
+      grow: true,
+      cell: (item: Victim) => <div className="truncate text-slate-400" title={item.Address}>{item.Address || "—"}</div>
     }
   ];
 
   const totalPages = victimsData?.total ? Math.ceil(victimsData.total / limit) : 0;
 
   return (
-    <div className="animate-fade-in font-sans">
+    <PageShell>
       <PageHeader 
         title="Victim Registry"
         subtitle="Protected database of affected individuals."
@@ -124,7 +126,7 @@ export default function Victims() {
       />
 
       {isLoading ? (
-        <div className="flex justify-center p-12 text-slate-400">Securely fetching details...</div>
+        <div className="glass-dark rounded-2xl border border-slate-700/50 flex justify-center p-12 text-slate-400">Securely fetching details...</div>
       ) : (
         <DataTable 
           data={victimsData?.data || []} 
@@ -141,7 +143,7 @@ export default function Victims() {
             <button
               key={p}
               onClick={() => setPage(p)}
-              className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold transition-all ${p === page ? "bg-white text-slate-950 shadow-lg" : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white"}`}
+              className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold transition-all ${p === page ? "bg-blue-600 text-white shadow-lg shadow-blue-500/25" : "bg-slate-800/80 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700/50"}`}
             >
               {p}
             </button>
@@ -196,6 +198,6 @@ export default function Victims() {
           />
         </div>
       </CrudModal>
-    </div>
+    </PageShell>
   );
 }

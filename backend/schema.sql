@@ -54,6 +54,8 @@ CREATE TABLE IF NOT EXISTS cases (
 );
 
 -- ─── FIR ─────────────────────────────────────────────────────
+-- Filing an FIR may create a linked case in the same request (API: newCase).
+-- Case_ID points at cases.Case_ID; Description on cases is the typed case name.
 CREATE TABLE IF NOT EXISTS fir (
   FIR_No    INT AUTO_INCREMENT PRIMARY KEY,
   FIR_Date  DATE NOT NULL,

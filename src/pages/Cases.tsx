@@ -4,6 +4,7 @@ import { FolderOpen } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PageHeader } from "../components/ui/PageHeader";
+import { PageShell } from "../components/ui/PageShell";
 import { DataTable } from "../components/ui/DataTable";
 import { CrudModal } from "../components/ui/CrudModal";
 import { StatusBadge } from "../components/ui/StatusBadge";
@@ -170,7 +171,8 @@ export default function Cases() {
     { 
       header: "Summary", 
       accessorKey: "Description" as keyof CaseItem,
-      cell: (item: CaseItem) => <div className="max-w-xs truncate">{item.Description || "—"}</div>
+      grow: true,
+      cell: (item: CaseItem) => <div className="truncate" title={item.Description}>{item.Description || "—"}</div>
     },
     { 
       header: "Status", 
@@ -203,7 +205,7 @@ export default function Cases() {
   const totalPages = casesData?.total ? Math.ceil(casesData.total / limit) : 0;
 
   return (
-    <div className="animate-fade-in font-sans">
+    <PageShell>
       <PageHeader 
         title="Case Records"
         subtitle="Manage and track law enforcement case files."
@@ -215,26 +217,25 @@ export default function Cases() {
           setSearch(val);
           setPage(1);
         }}
+        filters={
+          <select
+            value={statusFilter}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              setPage(1);
+            }}
+            className="bg-slate-950/60 border border-slate-700/80 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 min-w-[180px] shrink-0"
+          >
+            <option value="">All Statuses</option>
+            {STATUS_OPTIONS.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        }
       />
 
-      <div className="mb-6 flex">
-        <select
-          value={statusFilter}
-          onChange={(e) => {
-            setStatusFilter(e.target.value);
-            setPage(1);
-          }}
-          className="bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/50 min-w-[200px]"
-        >
-          <option value="">All Statuses</option>
-          {STATUS_OPTIONS.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
-      </div>
-
       {isLoading ? (
-        <div className="flex justify-center p-12 text-slate-400">Loading cases...</div>
+        <div className="glass-dark rounded-2xl border border-slate-700/50 flex justify-center p-12 text-slate-400">Loading cases...</div>
       ) : (
         <DataTable 
           data={casesData?.data || []} 
@@ -251,7 +252,7 @@ export default function Cases() {
             <button
               key={p}
               onClick={() => setPage(p)}
-              className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold transition-all ${p === page ? "bg-blue-600 text-white shadow-lg" : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white"}`}
+              className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold transition-all ${p === page ? "bg-blue-600 text-white shadow-lg shadow-blue-500/25" : "bg-slate-800/80 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700/50"}`}
             >
               {p}
             </button>
@@ -325,6 +326,6 @@ export default function Cases() {
           </select>
         </div>
       </CrudModal>
-    </div>
+    </PageShell>
   );
 }

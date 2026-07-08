@@ -3,6 +3,7 @@ import api from "../lib/apiClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PageHeader } from "../components/ui/PageHeader";
+import { PageShell } from "../components/ui/PageShell";
 import { DataTable } from "../components/ui/DataTable";
 import { CrudModal } from "../components/ui/CrudModal";
 
@@ -109,16 +110,18 @@ export default function Evidence() {
     { 
       header: "Evidence Category", 
       accessorKey: "Evidence_Type" as keyof EvidenceItem,
-      cell: (item: EvidenceItem) => <span className="font-semibold">{item.Evidence_Type}</span>
+      cell: (item: EvidenceItem) => <span className="font-semibold text-white">{item.Evidence_Type}</span>
     },
     { 
       header: "Detailed Tracking", 
-      cell: (item: EvidenceItem) => <div className="max-w-xs truncate text-slate-400">{item.Description || "—"}</div>
+      grow: true,
+      cell: (item: EvidenceItem) => <div className="truncate text-slate-400" title={item.Description}>{item.Description || "—"}</div>
     },
     { 
       header: "Linked Case", 
+      grow: true,
       cell: (item: EvidenceItem) => (
-        <div className="max-w-xs truncate text-slate-400">
+        <div className="truncate text-slate-400" title={(item.Case_ID as any)?.Description}>
           <span className="text-blue-400 bg-blue-500/10 px-2 py-1 rounded-md text-xs font-medium mr-2">Link</span>
           {(item.Case_ID as any)?.Description || "—"}
         </div>
@@ -129,7 +132,7 @@ export default function Evidence() {
   const totalPages = evidenceData?.total ? Math.ceil(evidenceData.total / limit) : 0;
 
   return (
-    <div className="animate-fade-in font-sans">
+    <PageShell>
       <PageHeader 
         title="Evidence Locker"
         subtitle="Secure storage and logging for case evidence."
@@ -138,7 +141,7 @@ export default function Evidence() {
       />
 
       {isLoading ? (
-        <div className="flex justify-center p-12 text-slate-400">Accessing evidence locker...</div>
+        <div className="glass-dark rounded-2xl border border-slate-700/50 flex justify-center p-12 text-slate-400">Accessing evidence locker...</div>
       ) : (
         <DataTable 
           data={evidenceData?.data || []} 
@@ -155,7 +158,7 @@ export default function Evidence() {
             <button
               key={p}
               onClick={() => setPage(p)}
-              className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold transition-all ${p === page ? "bg-white text-slate-950 shadow-lg" : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white"}`}
+              className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold transition-all ${p === page ? "bg-blue-600 text-white shadow-lg shadow-blue-500/25" : "bg-slate-800/80 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700/50"}`}
             >
               {p}
             </button>
@@ -207,6 +210,6 @@ export default function Evidence() {
           </select>
         </div>
       </CrudModal>
-    </div>
+    </PageShell>
   );
 }

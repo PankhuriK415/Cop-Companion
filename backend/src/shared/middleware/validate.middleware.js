@@ -1,6 +1,7 @@
 const validate = (schema) => (req, res, next) => {
   try {
-    schema.parse(req.body);
+    // Replace body with parsed output so defaults / transforms apply
+    req.body = schema.parse(req.body);
     next();
   } catch (err) {
     const messages = err.errors

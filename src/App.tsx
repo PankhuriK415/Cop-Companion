@@ -46,7 +46,7 @@ function NavBar() {
           className="flex items-center gap-2 text-xl font-bold tracking-tight text-white hover:opacity-80 transition-opacity"
         >
           <CopCompanionLogo size={32} animated={false} glow={true} className="mr-0.5" />
-          Cop-<span className="font-light text-slate-300">Companion</span>
+          <span>Cop-Companion</span>
         </Link>
         
         <div className="flex gap-1 text-sm items-center bg-slate-900/50 p-1 rounded-full border border-white/5">
@@ -133,10 +133,12 @@ function AppRoutes() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
-          className="w-full min-h-screen flex flex-col bg-gradient-to-br from-slate-900 to-slate-800"
+          className="w-full min-h-screen flex flex-col bg-slate-950"
         >
           <NavBar />
-          <div className="flex-1 overflow-auto">
+          <div className="flex-1 overflow-auto relative">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-black" />
+            <div className="relative z-10 min-h-full">
             <Routes>
               <Route
                 path="/"
@@ -223,6 +225,7 @@ function AppRoutes() {
                 element={<Navigate to={user ? "/dashboard" : "/"} replace />}
               />
             </Routes>
+            </div>
           </div>
         </motion.div>
       )}

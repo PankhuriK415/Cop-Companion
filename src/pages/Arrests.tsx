@@ -3,6 +3,7 @@ import api from "../lib/apiClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PageHeader } from "../components/ui/PageHeader";
+import { PageShell } from "../components/ui/PageShell";
 import { DataTable } from "../components/ui/DataTable";
 import { CrudModal } from "../components/ui/CrudModal";
 
@@ -131,9 +132,9 @@ export default function Arrests() {
       header: "Apprehended Target", 
       cell: (item: ArrestItem) => {
         if (typeof item.Criminal_ID === "number" && criminals) {
-          return criminals.find((c) => c.Criminal_ID === item.Criminal_ID)?.Criminal_Name || "—";
+          return <span className="font-semibold text-white">{criminals.find((c) => c.Criminal_ID === item.Criminal_ID)?.Criminal_Name || "—"}</span>;
         }
-        return (item.Criminal_ID as any)?.Criminal_Name || "—";
+        return <span className="font-semibold text-white">{(item.Criminal_ID as any)?.Criminal_Name || "—"}</span>;
       }
     },
     { 
@@ -142,12 +143,13 @@ export default function Arrests() {
     },
     { 
       header: "Formal Charges", 
-      cell: (item: ArrestItem) => <div className="max-w-xs truncate text-slate-400">{item.Charges || "—"}</div>
+      grow: true,
+      cell: (item: ArrestItem) => <div className="truncate text-slate-400" title={item.Charges}>{item.Charges || "—"}</div>
     },
     { 
       header: "Case Link Status", 
       cell: (item: ArrestItem) => (
-        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 border border-slate-700 text-slate-300">
+        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-800/80 border border-slate-700 text-slate-300">
           {(item.Case_ID as any)?.Case_Status || "Unknown"}
         </span>
       )
@@ -157,7 +159,7 @@ export default function Arrests() {
   const totalPages = arrestsData?.total ? Math.ceil(arrestsData.total / limit) : 0;
 
   return (
-    <div className="animate-fade-in font-sans">
+    <PageShell>
       <PageHeader 
         title="Arrest Records"
         subtitle="Official logs of apprehensions and detentions."
@@ -166,7 +168,7 @@ export default function Arrests() {
       />
 
       {isLoading ? (
-        <div className="flex justify-center p-12 text-slate-400">Retrieving arrest histories...</div>
+        <div className="glass-dark rounded-2xl border border-slate-700/50 flex justify-center p-12 text-slate-400">Retrieving arrest histories...</div>
       ) : (
         <DataTable 
           data={arrestsData?.data || []} 
@@ -183,7 +185,7 @@ export default function Arrests() {
             <button
               key={p}
               onClick={() => setPage(p)}
-              className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold transition-all ${p === page ? "bg-white text-slate-950 shadow-lg" : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white"}`}
+              className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold transition-all ${p === page ? "bg-blue-600 text-white shadow-lg shadow-blue-500/25" : "bg-slate-800/80 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700/50"}`}
             >
               {p}
             </button>
@@ -249,6 +251,6 @@ export default function Arrests() {
           />
         </div>
       </CrudModal>
-    </div>
+    </PageShell>
   );
 }

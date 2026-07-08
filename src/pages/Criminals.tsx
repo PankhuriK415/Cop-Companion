@@ -3,6 +3,7 @@ import api from "../lib/apiClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PageHeader } from "../components/ui/PageHeader";
+import { PageShell } from "../components/ui/PageShell";
 import { DataTable } from "../components/ui/DataTable";
 import { CrudModal } from "../components/ui/CrudModal";
 import { useDebounce } from "../hooks/useDebounce";
@@ -101,12 +102,12 @@ export default function Criminals() {
     { 
       header: "Name", 
       accessorKey: "Criminal_Name" as keyof Criminal,
-      cell: (item: Criminal) => <span className="font-semibold">{item.Criminal_Name}</span>
+      cell: (item: Criminal) => <span className="font-semibold text-white">{item.Criminal_Name}</span>
     },
     { 
       header: "Gender", 
       cell: (item: Criminal) => item.Gender ? (
-        <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-800 border border-slate-700">
+        <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-800/80 border border-slate-700">
           {item.Gender}
         </span>
       ) : "—"
@@ -117,14 +118,15 @@ export default function Criminals() {
     },
     { 
       header: "Address", 
-      cell: (item: Criminal) => <div className="max-w-xs truncate text-slate-400">{item.Address || "—"}</div>
+      grow: true,
+      cell: (item: Criminal) => <div className="truncate text-slate-400" title={item.Address}>{item.Address || "—"}</div>
     }
   ];
 
   const totalPages = criminalsData?.total ? Math.ceil(criminalsData.total / limit) : 0;
 
   return (
-    <div className="animate-fade-in font-sans">
+    <PageShell>
       <PageHeader 
         title="Criminal Database"
         subtitle="Manage criminal registries and profiles."
@@ -139,7 +141,7 @@ export default function Criminals() {
       />
 
       {isLoading ? (
-        <div className="flex justify-center p-12 text-slate-400">Accessing criminal registry...</div>
+        <div className="glass-dark rounded-2xl border border-slate-700/50 flex justify-center p-12 text-slate-400">Accessing criminal registry...</div>
       ) : (
         <DataTable 
           data={criminalsData?.data || []} 
@@ -156,7 +158,7 @@ export default function Criminals() {
             <button
               key={p}
               onClick={() => setPage(p)}
-              className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold transition-all ${p === page ? "bg-white text-slate-950 shadow-lg" : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white"}`}
+              className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold transition-all ${p === page ? "bg-blue-600 text-white shadow-lg shadow-blue-500/25" : "bg-slate-800/80 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700/50"}`}
             >
               {p}
             </button>
@@ -212,6 +214,6 @@ export default function Criminals() {
           />
         </div>
       </CrudModal>
-    </div>
+    </PageShell>
   );
 }

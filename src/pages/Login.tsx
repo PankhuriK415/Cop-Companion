@@ -241,6 +241,37 @@ export default function Login() {
                   : "Sign Up"}
             </button>
 
+            {mode === "login" && (
+              <div className="mt-4 pt-4 border-t border-slate-700/50">
+                <p className="text-xs text-center text-slate-400 mb-3">Quick Demo Login</p>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    disabled={loading}
+                    onClick={() => handleDevLogin("officer")}
+                    className="text-xs bg-blue-900/40 text-blue-300 border border-blue-800/50 hover:bg-blue-800/60 rounded-md py-1.5 transition disabled:opacity-50"
+                  >
+                    Officer
+                  </button>
+                  <button
+                    type="button"
+                    disabled={loading}
+                    onClick={() => handleDevLogin("victim")}
+                    className="text-xs bg-purple-900/40 text-purple-300 border border-purple-800/50 hover:bg-purple-800/60 rounded-md py-1.5 transition disabled:opacity-50"
+                  >
+                    Victim
+                  </button>
+                  <button
+                    type="button"
+                    disabled={loading}
+                    onClick={() => handleDevLogin("criminal")}
+                    className="text-xs bg-orange-900/40 text-orange-300 border border-orange-800/50 hover:bg-orange-800/60 rounded-md py-1.5 transition disabled:opacity-50"
+                  >
+                    Criminal
+                  </button>
+                </div>
+              </div>
+            )}
           </form>
         </div>
       </div>
