@@ -32,6 +32,14 @@ if (shouldUseDatabaseUrl) {
       port: process.env.DB_PORT || 3306,
       dialect: "mysql",
       logging: false,
+      ...((process.env.DB_HOST || "").includes("tidbcloud.com") && {
+        dialectOptions: {
+          ssl: {
+            minVersion: "TLSv1.2",
+            rejectUnauthorized: true,
+          },
+        },
+      }),
     },
   );
 }
