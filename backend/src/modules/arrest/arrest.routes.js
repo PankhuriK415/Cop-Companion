@@ -1,0 +1,11 @@
+const express = require('express');
+const router = express.Router();
+const ctrl = require('./arrest.controller');
+const validate = require('../../shared/middleware/validate.middleware');
+const { arrestSchema } = require('./arrest.schema');
+router.get('/', ctrl.getArrests);
+router.get('/:id', ctrl.getArrestById);
+router.post('/', validate(arrestSchema), ctrl.createArrest);
+router.put('/:id', validate(arrestSchema), ctrl.updateArrest);
+router.delete('/:id', ctrl.deleteArrest);
+module.exports = router;

@@ -1,12 +1,14 @@
 require('./config/dotenv');
 const app = require('./app');
-const { connectDB } = require('./config/db');
+const { connectDB } = require('./src/shared/database/connection');
+const setupAssociations = require('./src/shared/database/associations');
 
 
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   await connectDB();
+  setupAssociations();
 
   const server = app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
